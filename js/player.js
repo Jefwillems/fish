@@ -3,7 +3,7 @@ function Player() {
   this.cY = 50;
   this.size = Math.random() * 50 + 1;
   this.angle = PI / 2;
-  this.img = loadImage("../assets/img/fish.png");
+  this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;
 }
 
