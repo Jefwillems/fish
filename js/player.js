@@ -27,9 +27,13 @@ Player.prototype.move = function() {
 Player.prototype.draw = function() {
   this.move();
   push();
+  var x = this.cX - this.size * 2.3 / 2;
+  var y = this.cY - this.size / 2;
   if (!this.movingRight) {
     scale(-1.0, 1.0);
+    image(this.img, -1 * x - this.size * 2, y, this.size * 2.3, this.size);
+  } else {
+    image(this.img, x, y, this.size * 2.3, this.size);
   }
-  image(this.img, this.cX, this.cY, this.size * 2.3, this.size);
   pop();
 };
