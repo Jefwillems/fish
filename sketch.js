@@ -1,11 +1,26 @@
+var fishes = [];
+var player;
 function setup() {
-  createCanvas(600, 480);
-}
-function draw() {
-  if (mouseIsPressed) {
-    fill(0);
-  } else {
-    fill(255);
+  createButton("test");
+  createCanvas(600, 480).parent("cv-container");
+  for (let i = 0; i < 10; i++) {
+    var h = height / 10 * i;
+    var x = Math.random() * width;
+    fishes.push(new Fish(x, h));
   }
-  ellipse(mouseX, mouseY, 80, 80);
+  player = new Player();
+}
+
+var resetCV = function() {
+  clear();
+  background(42, 150, 252);
+};
+
+function draw() {
+  resetCV();
+  for (const fish of fishes) {
+    fish.update();
+    fish.draw();
+  }
+  player.draw();
 }
