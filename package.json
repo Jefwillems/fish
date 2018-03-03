@@ -1,0 +1,11 @@
+{
+  "name": "fishgame",
+  "version": "1.0.0",
+  "main": "sketch.js",
+  "author": "Jefwillems <jefwillems100@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "p5": "^0.6.0"
+  }
+}
