@@ -23,6 +23,8 @@ function draw() {
     fish.draw();
     if (player.canEat(fish)) {
       console.log("eating Jean Pierre");
+      fish.reset();
+      player.addScore();
     }
   }
   player.draw();

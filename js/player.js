@@ -6,6 +6,9 @@ function Player() {
   this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;
   this.speed = 3;
+  this.score = 0;
+  this.w = this.size * 2.3;
+  this.h = this.size;
 }
 
 Player.prototype.move = function() {
@@ -47,6 +50,10 @@ Player.prototype.draw = function() {
     image(this.img, x, y, this.size * 2.3, this.size);
   }
   pop();
+  push();
+  textSize(32);
+  text("Score: " + this.score, 10, 30);
+  pop();
 };
 
 /**
@@ -55,11 +62,21 @@ Player.prototype.draw = function() {
  * @param {Fish} fish
  */
 Player.prototype.canEat = function(fish) {
-  var centroidDistance = Math.sqrt(
-    Math.pow(this.cX - fish.x, 2) + Math.pow(this.cY - fish.y, 2)
+  //rect(this.cX - this.w / 2, this.cY - this.h / 2, this.size * 2.3, this.size);
+  //hit = collideRectRect(x, y, width, height, x2, y2, width2, height2 )
+  var hit = collideRectCircle(
+    this.cX - this.w / 2,
+    this.cY - this.h / 2,
+    this.size * 2.3,
+    this.size,
+    fish.x,
+    fish.y,
+    fish.size,
+    fish.size
   );
-  if (centroidDistance < this.size / 2 + fish.size) {
-    return true;
-  }
-  return false;
+  return hit;
+};
+
+Player.prototype.addScore = function() {
+  this.score += 1;
 };

@@ -14,3 +14,8 @@ Fish.prototype.update = function() {
     this.x = 0;
   }
 };
+
+Fish.prototype.reset = function() {
+  this.size = Math.random() * 50 + 1;
+  this.x = Math.random() * width;
+};
