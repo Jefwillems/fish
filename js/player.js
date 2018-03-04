@@ -7,9 +7,14 @@ function Player() {
   this.movingRight = true;
   this.speed = 3;
   this.score = 0;
-  this.w = this.size * 2.3;
-  this.h = this.size;
 }
+Player.prototype.w = function() {
+  return this.size * 2.3;
+};
+
+Player.prototype.h = function() {
+  return this.size;
+};
 
 Player.prototype.move = function() {
   if (keyIsDown(LEFT_ARROW)) {
@@ -62,11 +67,9 @@ Player.prototype.draw = function() {
  * @param {Fish} fish
  */
 Player.prototype.canEat = function(fish) {
-  //rect(this.cX - this.w / 2, this.cY - this.h / 2, this.size * 2.3, this.size);
-  //hit = collideRectRect(x, y, width, height, x2, y2, width2, height2 )
   var hit = collideRectCircle(
-    this.cX - this.w / 2,
-    this.cY - this.h / 2,
+    this.cX - this.w() / 2,
+    this.cY - this.h() / 2,
     this.size * 2.3,
     this.size,
     fish.x,
