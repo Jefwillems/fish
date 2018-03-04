@@ -21,6 +21,9 @@ function draw() {
   for (const fish of fishes) {
     fish.update();
     fish.draw();
+    if (player.canEat(fish)) {
+      console.log("eating Jean Pierre");
+    }
   }
   player.draw();
 }
