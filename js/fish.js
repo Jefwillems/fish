@@ -5,6 +5,7 @@ function Fish(x, y) {
 }
 
 Fish.prototype.draw = function() {
+  this.update();
   ellipse(this.x, this.y, this.size, this.size);
 };
 

@@ -80,6 +80,18 @@ Player.prototype.canEat = function(fish) {
   return hit;
 };
 
+Player.prototype.eat = function(fish) {
+  fish.reset();
+  this.addScore();
+};
+
+/**
+ *
+ *
+ * @param {Powerup} powerup
+ */
+Player.prototype.setPower = function(powerup) {};
+
 Player.prototype.addScore = function() {
   this.score += 1;
 };
