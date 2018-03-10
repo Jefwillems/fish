@@ -11,7 +11,7 @@ function setup() {
     fishes.push(new Fish(x, h));
   }
   player = new Player();
-  MAX_POWERUP_CHANCE = 0.6;
+  MAX_POWERUP_CHANCE = 0.3;
 }
 
 function draw() {
@@ -23,10 +23,11 @@ function draw() {
       handleSpawns();
     }
   }
-  for (const powerup of powerups) {
-    powerup.draw();
-    if (player.canEat(powerup)) {
-      player.setPower(powerup);
+  for (var i = 0; i < powerups.length; i++) {
+    powerups[i].draw();
+    if (player.canEat(powerups[i])) {
+      player.setPower(powerups[i]);
+      powerups.splice(i, 1);
     }
   }
   player.draw();
