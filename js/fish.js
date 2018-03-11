@@ -2,7 +2,7 @@ function Fish(x, y) {
   this.size = Math.random() * 50 + 1;
   this.x = x;
   this.y = y;
-  this.direction = [random(), random()];
+  this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
 Fish.prototype.draw = function() {
@@ -26,5 +26,5 @@ Fish.prototype.reset = function(playerSize) {
   var sizeMultiplier = random() * 0.1 + 1;
   this.size *= sizeMultiplier;
   this.x = random() * width;
-  this.direction = [random(), random()];
+  this.direction = [random() * 2 - 1, random() * 2 - 1];
 };
