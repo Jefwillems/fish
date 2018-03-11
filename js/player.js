@@ -82,8 +82,8 @@ Player.prototype.canEat = function(fish) {
 };
 
 Player.prototype.eat = function(fish) {
-  this.size += fish.size / 4;
-  fish.reset();
+  this.size += fish.size / 10;
+  fish.reset(this.size);
   this.addScore();
 };
 

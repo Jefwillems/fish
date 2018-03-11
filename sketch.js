@@ -12,7 +12,7 @@ function setup() {
     fishes.push(new Fish(x, h));
   }
   player = new Player();
-  MAX_POWERUP_CHANCE = 0.1;
+  MAX_POWERUP_CHANCE = 0.2;
 }
 
 function draw() {
