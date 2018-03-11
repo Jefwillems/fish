@@ -12,6 +12,7 @@ Powerup.prototype.draw = function() {
   ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
+
 Powerup.prototype.update = function() {
   this.x = this.x + 1 * this.direction[0];
   this.y = this.y + 1 * this.direction[1];

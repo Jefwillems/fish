@@ -2,6 +2,7 @@ var fishes = [];
 var powerups = [];
 var player;
 var MAX_POWERUP_CHANCE;
+var gameOver = false;
 function setup() {
   createButton("test");
   createCanvas(600, 480).parent("cv-container");
@@ -16,21 +17,35 @@ function setup() {
 
 function draw() {
   resetCV();
-  for (const fish of fishes) {
-    fish.draw();
-    if (player.canEat(fish)) {
-      player.eat(fish);
-      handleSpawns();
+  if (!gameOver) {
+    for (const fish of fishes) {
+      fish.draw();
+      if (player.canEat(fish)) {
+        if (player.size >= fish.size) {
+          player.eat(fish);
+          handleSpawns();
+        } else {
+          gameOver = true;
+        }
+      }
     }
-  }
-  for (var i = 0; i < powerups.length; i++) {
-    powerups[i].draw();
-    if (player.canEat(powerups[i])) {
-      player.setPower(powerups[i]);
-      powerups.splice(i, 1);
+    for (var i = 0; i < powerups.length; i++) {
+      powerups[i].draw();
+      if (player.canEat(powerups[i])) {
+        player.setPower(powerups[i]);
+        powerups.splice(i, 1);
+      }
     }
+    player.draw();
+  } else {
+    push();
+    textSize(48);
+    textAlign(CENTER, CENTER);
+    var t = "Game Over!\nScore: " + player.score;
+    var tW = textWidth(t);
+    text(t, width / 2, height / 2);
+    pop();
   }
-  player.draw();
 }
 
 var resetCV = function() {
