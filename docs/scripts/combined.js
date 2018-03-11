@@ -42,6 +42,35 @@ for(var s in this._freqMods)"undefined"!=typeof this._freqMods[s].connect&&this.
 if(t.isPlaying){var r=t.clock._nextTick-e.audiocontext.currentTime;this.clock.start(o+r),this.isPlaying=!0}}else t.clock.start(o+n),t.isPlaying=!0,this.clock.start(o+n),this.isPlaying=!0},t.SoundLoop.prototype._update=function(){this.clock.frequency.value=this._calcFreq()},t.SoundLoop.prototype._calcFreq=function(){return"number"==typeof this._interval?(this.musicalTimeMode=!1,1/this._interval):"string"==typeof this._interval?(this.musicalTimeMode=!0,this._bpm/60/this._convertNotation(this._interval)*(this._timeSignature/4)):void 0},t.SoundLoop.prototype._convertNotation=function(t){var e=t.slice(-1);switch(t=Number(t.slice(0,-1)),e){case"m":return this._measure(t);case"n":return this._note(t);default:console.warn("Specified interval is not formatted correctly. See Tone.js timing reference for more info: https://github.com/Tonejs/Tone.js/wiki/Time")}},t.SoundLoop.prototype._measure=function(t){return t*this._timeSignature},t.SoundLoop.prototype._note=function(t){return this._timeSignature/t},Object.defineProperty(t.SoundLoop.prototype,"bpm",{get:function(){return this._bpm},set:function(t){this.musicalTimeMode||console.warn('Changing the BPM in "seconds" mode has no effect. BPM is only relevant in musicalTimeMode when the interval is specified as a string ("2n", "4n", "1m"...etc)'),this._bpm=t,this._update()}}),Object.defineProperty(t.SoundLoop.prototype,"timeSignature",{get:function(){return this._timeSignature},set:function(t){this.musicalTimeMode||console.warn('Changing the timeSignature in "seconds" mode has no effect. BPM is only relevant in musicalTimeMode when the interval is specified as a string ("2n", "4n", "1m"...etc)'),this._timeSignature=t,this._update()}}),Object.defineProperty(t.SoundLoop.prototype,"interval",{get:function(){return this._interval},set:function(t){this.musicalTimeMode="Number"==typeof t?!1:!0,this._interval=t,this._update()}}),Object.defineProperty(t.SoundLoop.prototype,"iterations",{get:function(){return this.clock.ticks}}),t.SoundLoop}(i,K);var nt;nt=function(){"use strict";var e=Z;return t.Compressor=function(){e.call(this),this.compressor=this.ac.createDynamicsCompressor(),this.input.connect(this.compressor),this.compressor.connect(this.wet)},t.Compressor.prototype=Object.create(e.prototype),t.Compressor.prototype.process=function(t,e,i,n,o,r){t.connect(this.input),this.set(e,i,n,o,r)},t.Compressor.prototype.set=function(t,e,i,n,o){"undefined"!=typeof t&&this.attack(t),"undefined"!=typeof e&&this.knee(e),"undefined"!=typeof i&&this.ratio(i),"undefined"!=typeof n&&this.threshold(n),"undefined"!=typeof o&&this.release(o)},t.Compressor.prototype.attack=function(t,e){var i=e||0;return"number"==typeof t?(this.compressor.attack.value=t,this.compressor.attack.cancelScheduledValues(this.ac.currentTime+.01+i),this.compressor.attack.linearRampToValueAtTime(t,this.ac.currentTime+.02+i)):"undefined"!=typeof t&&t.connect(this.compressor.attack),this.compressor.attack.value},t.Compressor.prototype.knee=function(t,e){var i=e||0;return"number"==typeof t?(this.compressor.knee.value=t,this.compressor.knee.cancelScheduledValues(this.ac.currentTime+.01+i),this.compressor.knee.linearRampToValueAtTime(t,this.ac.currentTime+.02+i)):"undefined"!=typeof t&&t.connect(this.compressor.knee),this.compressor.knee.value},t.Compressor.prototype.ratio=function(t,e){var i=e||0;return"number"==typeof t?(this.compressor.ratio.value=t,this.compressor.ratio.cancelScheduledValues(this.ac.currentTime+.01+i),this.compressor.ratio.linearRampToValueAtTime(t,this.ac.currentTime+.02+i)):"undefined"!=typeof t&&t.connect(this.compressor.ratio),this.compressor.ratio.value},t.Compressor.prototype.threshold=function(t,e){var i=e||0;return"number"==typeof t?(this.compressor.threshold.value=t,this.compressor.threshold.cancelScheduledValues(this.ac.currentTime+.01+i),this.compressor.threshold.linearRampToValueAtTime(t,this.ac.currentTime+.02+i)):"undefined"!=typeof t&&t.connect(this.compressor.threshold),this.compressor.threshold.value},t.Compressor.prototype.release=function(t,e){var i=e||0;return"number"==typeof t?(this.compressor.release.value=t,this.compressor.release.cancelScheduledValues(this.ac.currentTime+.01+i),this.compressor.release.linearRampToValueAtTime(t,this.ac.currentTime+.02+i)):"undefined"!=typeof number&&t.connect(this.compressor.release),this.compressor.release.value},t.Compressor.prototype.reduction=function(){return this.compressor.reduction.value},t.Compressor.prototype.dispose=function(){e.prototype.dispose.apply(this),this.compressor.disconnect(),this.compressor=void 0},t.Compressor}(i,Z,o);var ot;ot=function(){function e(t,e){for(var i=t.length+e.length,n=new Float32Array(i),o=0,r=0;i>r;)n[r++]=t[o],n[r++]=e[o],o++;return n}function n(t,e,i){for(var n=i.length,o=0;n>o;o++)t.setUint8(e+o,i.charCodeAt(o))}var o=i,r=o.audiocontext;t.SoundRecorder=function(){this.input=r.createGain(),this.output=r.createGain(),this.recording=!1,this.bufferSize=1024,this._channels=2,this._clear(),this._jsNode=r.createScriptProcessor(this.bufferSize,this._channels,2),this._jsNode.onaudioprocess=this._audioprocess.bind(this),this._callback=function(){},this._jsNode.connect(t.soundOut._silentNode),this.setInput(),o.soundArray.push(this)},t.SoundRecorder.prototype.setInput=function(e){this.input.disconnect(),this.input=null,this.input=r.createGain(),this.input.connect(this._jsNode),this.input.connect(this.output),e?e.connect(this.input):t.soundOut.output.connect(this.input)},t.SoundRecorder.prototype.record=function(t,e,i){this.recording=!0,e&&(this.sampleLimit=Math.round(e*r.sampleRate)),t&&i?this._callback=function(){this.buffer=this._getBuffer(),t.setBuffer(this.buffer),i()}:t&&(this._callback=function(){this.buffer=this._getBuffer(),t.setBuffer(this.buffer)})},t.SoundRecorder.prototype.stop=function(){this.recording=!1,this._callback(),this._clear()},t.SoundRecorder.prototype._clear=function(){this._leftBuffers=[],this._rightBuffers=[],this.recordedSamples=0,this.sampleLimit=null},t.SoundRecorder.prototype._audioprocess=function(t){if(this.recording!==!1&&this.recording===!0)if(this.sampleLimit&&this.recordedSamples>=this.sampleLimit)this.stop();else{var e=t.inputBuffer.getChannelData(0),i=t.inputBuffer.getChannelData(1);this._leftBuffers.push(new Float32Array(e)),this._rightBuffers.push(new Float32Array(i)),this.recordedSamples+=this.bufferSize}},t.SoundRecorder.prototype._getBuffer=function(){var t=[];return t.push(this._mergeBuffers(this._leftBuffers)),t.push(this._mergeBuffers(this._rightBuffers)),t},t.SoundRecorder.prototype._mergeBuffers=function(t){for(var e=new Float32Array(this.recordedSamples),i=0,n=t.length,o=0;n>o;o++){var r=t[o];e.set(r,i),i+=r.length}return e},t.SoundRecorder.prototype.dispose=function(){this._clear();var t=o.soundArray.indexOf(this);o.soundArray.splice(t,1),this._callback=function(){},this.input&&this.input.disconnect(),this.input=null,this._jsNode=null},t.prototype.saveSound=function(i,o){var r,s;r=i.buffer.getChannelData(0),s=i.buffer.numberOfChannels>1?i.buffer.getChannelData(1):r;var a=e(r,s),u=new window.ArrayBuffer(44+2*a.length),c=new window.DataView(u);n(c,0,"RIFF"),c.setUint32(4,36+2*a.length,!0),n(c,8,"WAVE"),n(c,12,"fmt "),c.setUint32(16,16,!0),c.setUint16(20,1,!0),c.setUint16(22,2,!0),c.setUint32(24,44100,!0),c.setUint32(28,176400,!0),c.setUint16(32,4,!0),c.setUint16(34,16,!0),n(c,36,"data"),c.setUint32(40,2*a.length,!0);for(var p=a.length,h=44,l=1,f=0;p>f;f++)c.setInt16(h,a[f]*(32767*l),!0),h+=2;t.prototype.writeFile([c],o,"wav")}}(e,i);var rt;rt=function(){t.PeakDetect=function(t,e,i,n){this.framesPerPeak=n||20,this.framesSinceLastPeak=0,this.decayRate=.95,this.threshold=i||.35,this.cutoff=0,this.cutoffMult=1.5,this.energy=0,this.penergy=0,this.currentValue=0,this.isDetected=!1,this.f1=t||40,this.f2=e||2e4,this._onPeak=function(){}},t.PeakDetect.prototype.update=function(t){var e=this.energy=t.getEnergy(this.f1,this.f2)/255;e>this.cutoff&&e>this.threshold&&e-this.penergy>0?(this._onPeak(),this.isDetected=!0,this.cutoff=e*this.cutoffMult,this.framesSinceLastPeak=0):(this.isDetected=!1,this.framesSinceLastPeak<=this.framesPerPeak?this.framesSinceLastPeak++:(this.cutoff*=this.decayRate,this.cutoff=Math.max(this.cutoff,this.threshold))),this.currentValue=e,this.penergy=e},t.PeakDetect.prototype.onPeak=function(t,e){var i=this;i._onPeak=function(){t(i.energy,e)}}}();var st;st=function(){var e=i;t.Gain=function(){this.ac=e.audiocontext,this.input=this.ac.createGain(),this.output=this.ac.createGain(),this.input.gain.value=.5,this.input.connect(this.output),e.soundArray.push(this)},t.Gain.prototype.setInput=function(t){t.connect(this.input)},t.Gain.prototype.connect=function(e){var i=e||t.soundOut.input;this.output.connect(i.input?i.input:i)},t.Gain.prototype.disconnect=function(){this.output.disconnect()},t.Gain.prototype.amp=function(t,i,n){var i=i||0,n=n||0,o=e.audiocontext.currentTime,r=this.output.gain.value;this.output.gain.cancelScheduledValues(o),this.output.gain.linearRampToValueAtTime(r,o+n),this.output.gain.linearRampToValueAtTime(t,o+n+i)},t.Gain.prototype.dispose=function(){var t=e.soundArray.indexOf(this);e.soundArray.splice(t,1),this.output.disconnect(),this.input.disconnect(),this.output=void 0,this.input=void 0}}(i,e);var at;at=function(){var e=i;return t.AudioVoice=function(){this.ac=e.audiocontext,this.output=this.ac.createGain(),this.connect(),e.soundArray.push(this)},t.AudioVoice.prototype._setNote=function(e){var i={A:21,B:23,C:24,D:26,E:28,F:29,G:31},n=i[e[0]],o="number"==typeof Number(e.slice(-1))?e.slice(-1):0;return n+=12*o,n="#"===e[1]?n+1:"b"===e[1]?n-1:n,t.prototype.midiToFreq(n)},t.AudioVoice.prototype.play=function(t,e,i,n){},t.AudioVoice.prototype.triggerAttack=function(t,e,i){},t.AudioVoice.prototype.triggerRelease=function(t){},t.AudioVoice.prototype.amp=function(t,e){},t.AudioVoice.prototype.connect=function(t){var i=t||e.input;this.output.connect(i.input?i.input:i)},t.AudioVoice.prototype.disconnect=function(){this.output.disconnect()},t.AudioVoice.prototype.dispose=function(){this.output.disconnect(),delete this.output},t.AudioVoice}(i);var ut;ut=function(){var e=i,n=at;t.MonoSynth=function(){n.call(this),this.oscillator=new t.Oscillator,this.env=new t.Env,this.env.setRange(1,0),this.env.setExp(!0),this.setADSR(.02,.25,.05,.35),this.filter=new t.Filter("highpass"),this.filter.set(5,1),this.oscillator.disconnect(),this.oscillator.connect(this.filter),this.env.disconnect(),this.env.setInput(this.oscillator),this.filter.connect(this.output),this.oscillator.start(),this.connect(),this._isOn=!1,e.soundArray.push(this)},t.MonoSynth.prototype=Object.create(t.AudioVoice.prototype),t.MonoSynth.prototype.play=function(t,e,i,n){var n=n||this.sustain;this.susTime=n,this.triggerAttack(t,e,i),this.triggerRelease(i+n)},t.MonoSynth.prototype.triggerAttack=function(t,e,i){var i=i||0,n="string"==typeof t?this._setNote(t):"number"==typeof t?t:440,o=e||1;this._isOn=!0,this.oscillator.freq(n,0,i),this.env.ramp(this.output,i,o)},t.MonoSynth.prototype.triggerRelease=function(t){var t=t||0;this.env.ramp(this.output,t,0),this._isOn=!1},t.MonoSynth.prototype.setADSR=function(t,e,i,n){this.env.setADSR(t,e,i,n)},Object.defineProperties(t.MonoSynth.prototype,{attack:{get:function(){return this.env.aTime},set:function(t){this.env.setADSR(t,this.env.dTime,this.env.sPercent,this.env.rTime)}},decay:{get:function(){return this.env.dTime},set:function(t){this.env.setADSR(this.env.aTime,t,this.env.sPercent,this.env.rTime)}},sustain:{get:function(){return this.env.sPercent},set:function(t){this.env.setADSR(this.env.aTime,this.env.dTime,t,this.env.rTime)}},release:{get:function(){return this.env.rTime},set:function(t){this.env.setADSR(this.env.aTime,this.env.dTime,this.env.sPercent,t)}}}),t.MonoSynth.prototype.amp=function(t,e){var i=e||0;return"undefined"!=typeof t&&this.oscillator.amp(t,i),this.oscillator.amp().value},t.MonoSynth.prototype.connect=function(t){var i=t||e.input;this.output.connect(i.input?i.input:i)},t.MonoSynth.prototype.disconnect=function(){this.output.disconnect()},t.MonoSynth.prototype.dispose=function(){n.prototype.dispose.apply(this),this.filter.dispose(),this.env.dispose();try{this.oscillator.dispose()}catch(t){console.error("mono synth default oscillator already disposed")}}}(i,at);var ct;ct=function(){var e=i,n=O;t.PolySynth=function(i,o){this.audiovoices=[],this.notes={},this._newest=0,this._oldest=0,this.polyValue=o||8,this.AudioVoice=void 0===i?t.MonoSynth:i,this._voicesInUse=new n(0),this.output=e.audiocontext.createGain(),this.connect(),this._allocateVoices(),e.soundArray.push(this)},t.PolySynth.prototype._allocateVoices=function(){for(var t=0;t<this.polyValue;t++)this.audiovoices.push(new this.AudioVoice),this.audiovoices[t].disconnect(),this.audiovoices[t].connect(this.output)},t.PolySynth.prototype.play=function(t,e,i,n){var n=n||1;this.noteAttack(t,e,i),this.noteRelease(t,i+n)},t.PolySynth.prototype.noteADSR=function(t,i,n,o,r,s){var a=e.audiocontext.currentTime,s=s||0,u=a+s;this.audiovoices[this.notes[t].getValueAtTime(u)].setADSR(i,n,o,r)},t.PolySynth.prototype.setADSR=function(t,e,i,n){this.audiovoices.forEach(function(o){o.setADSR(t,e,i,n)})},t.PolySynth.prototype.noteAttack=function(i,o,r){var s,a=e.audiocontext.currentTime,u=r||0,c=a+u,p="string"==typeof i?this.AudioVoice.prototype._setNote(i):"number"==typeof i?i:440,h=void 0===o?1:o;if(void 0!==this.notes[p]&&null!==this.notes[p].getValueAtTime(c)&&this.noteRelease(p,0),this._voicesInUse.getValueAtTime(c)<this.polyValue)s=this._voicesInUse.getValueAtTime(c);else{s=this._oldest;var l=t.prototype.freqToMidi(this.audiovoices[this._oldest].oscillator.freq().value);this.noteRelease(l),this._oldest=(this._oldest+1)%(this.polyValue-1)}this.notes[p]=new n,this.notes[p].setValueAtTime(s,c);var f=null===this._voicesInUse._searchBefore(c)?0:this._voicesInUse._searchBefore(c).value;if(this._voicesInUse.setValueAtTime(f+1,c),this._updateAfter(c,1),this._newest=s,"number"==typeof h){var d=1/this._voicesInUse.getValueAtTime(c)*2;h=h>d?d:h}this.audiovoices[s].triggerAttack(p,h,u)},t.PolySynth.prototype._updateAfter=function(t,e){if(null!==this._voicesInUse._searchAfter(t)){this._voicesInUse._searchAfter(t).value+=e;var i=this._voicesInUse._searchAfter(t).time;this._updateAfter(i,e)}},t.PolySynth.prototype.noteRelease=function(t,i){var n="string"==typeof t?this.AudioVoice.prototype._setNote(t):"number"==typeof t?t:this.audiovoices[this._newest].oscillator.freq().value,o=e.audiocontext.currentTime,r=i||0,s=o+r;if(null===this.notes[n].getValueAtTime(s))console.warn("Cannot release a note that is not already playing");else{var a=null===this._voicesInUse._searchBefore(s)?0:this._voicesInUse._searchBefore(s).value;this._voicesInUse.setValueAtTime(a-1,s),this._updateAfter(s,-1),this.audiovoices[this.notes[n].getValueAtTime(s)].triggerRelease(r),this.notes[n].setValueAtTime(null,s),this._newest=0===this._newest?0:(this._newest-1)%(this.polyValue-1)}},t.PolySynth.prototype.connect=function(t){var i=t||e.input;this.output.connect(i.input?i.input:i)},t.PolySynth.prototype.disconnect=function(){this.output.disconnect()},t.PolySynth.prototype.dispose=function(){this.audiovoices.forEach(function(t){t.dispose()}),this.output.disconnect(),delete this.output}}(i,O,e);var pt;pt=function(){function e(t){for(var e,i="number"==typeof t?t:50,n=44100,o=new Float32Array(n),r=Math.PI/180,s=0;n>s;++s)e=2*s/n-1,o[s]=(3+i)*e*20*r/(Math.PI+i*Math.abs(e));return o}var i=Z;t.Distortion=function(n,o){if(i.call(this),"undefined"==typeof n&&(n=.25),"number"!=typeof n)throw new Error("amount must be a number");if("undefined"==typeof o&&(o="2x"),"string"!=typeof o)throw new Error("oversample must be a String");var r=t.prototype.map(n,0,1,0,2e3);this.waveShaperNode=this.ac.createWaveShaper(),this.amount=r,this.waveShaperNode.curve=e(r),this.waveShaperNode.oversample=o,this.input.connect(this.waveShaperNode),this.waveShaperNode.connect(this.wet)},t.Distortion.prototype=Object.create(i.prototype),t.Distortion.prototype.process=function(t,e,i){t.connect(this.input),this.set(e,i)},t.Distortion.prototype.set=function(i,n){if(i){var o=t.prototype.map(i,0,1,0,2e3);this.amount=o,this.waveShaperNode.curve=e(o)}n&&(this.waveShaperNode.oversample=n)},t.Distortion.prototype.getAmount=function(){return this.amount},t.Distortion.prototype.getOversample=function(){return this.waveShaperNode.oversample},t.Distortion.prototype.dispose=function(){i.prototype.dispose.apply(this),this.waveShaperNode.disconnect(),this.waveShaperNode=null}}(Z);var ht;ht=function(){var t=e;return t}(e,i,n,o,r,s,a,u,A,P,F,q,M,V,X,z,W,Q,H,$,tt,et,it,nt,ot,rt,st,ut,ct,pt,at,ut,ct)});
 
 console.log("### p5.collide ###"),p5.prototype._collideDebug=!1,p5.prototype.collideDebug=function(a){_collideDebug=a},p5.prototype.collideRectRect=function(a,b,c,d,e,f,g,h){return a+c>=e&&e+g>=a&&b+d>=f&&f+h>=b?!0:!1},p5.prototype.collideRectCircle=function(a,b,c,d,e,f,g){var h=e,i=f;a>e?h=a:e>a+c&&(h=a+c),b>f?i=b:f>b+d&&(i=b+d);var j=this.dist(e,f,h,i);return g/2>=j?!0:!1},p5.prototype.collideCircleCircle=function(a,b,c,d,e,f){return this.dist(a,b,d,e)<=c/2+f/2?!0:!1},p5.prototype.collidePointCircle=function(a,b,c,d,e){return this.dist(a,b,c,d)<=e/2?!0:!1},p5.prototype.collidePointRect=function(a,b,c,d,e,f){return a>=c&&c+e>=a&&b>=d&&d+f>=b?!0:!1},p5.prototype.collidePointLine=function(a,b,c,d,e,f,g){var h=this.dist(a,b,c,d),i=this.dist(a,b,e,f),j=this.dist(c,d,e,f);return void 0===g&&(g=.1),h+i>=j-g&&j+g>=h+i?!0:!1},p5.prototype.collideLineCircle=function(a,b,c,d,e,f,g){var h=this.collidePointCircle(a,b,e,f,g),i=this.collidePointCircle(c,d,e,f,g);if(h||i)return!0;var j=a-c,k=b-d,l=this.sqrt(j*j+k*k),m=((e-a)*(c-a)+(f-b)*(d-b))/this.pow(l,2),n=a+m*(c-a),o=b+m*(d-b),p=this.collidePointLine(n,o,a,b,c,d);if(!p)return!1;this._collideDebug&&this.ellipse(n,o,10,10),j=n-e,k=o-f;var q=this.sqrt(j*j+k*k);return g/2>=q?!0:!1},p5.prototype.collideLineLine=function(a,b,c,d,e,f,g,h,i){var j,k=((g-e)*(b-f)-(h-f)*(a-e))/((h-f)*(c-a)-(g-e)*(d-b)),l=((c-a)*(b-f)-(d-b)*(a-e))/((h-f)*(c-a)-(g-e)*(d-b));if(k>=0&&1>=k&&l>=0&&1>=l){if(this._collideDebug||i)var m=a+k*(c-a),n=b+k*(d-b);return this._collideDebug&&this.ellipse(m,n,10,10),i?j={x:m,y:n}:!0}return i?j={x:!1,y:!1}:!1},p5.prototype.collideLineRect=function(a,b,c,d,e,f,g,h,i){var j,k,l,m,n;return i?(j=this.collideLineLine(a,b,c,d,e,f,e,f+h,!0),k=this.collideLineLine(a,b,c,d,e+g,f,e+g,f+h,!0),l=this.collideLineLine(a,b,c,d,e,f,e+g,f,!0),m=this.collideLineLine(a,b,c,d,e,f+h,e+g,f+h,!0),n={left:j,right:k,top:l,bottom:m}):(j=this.collideLineLine(a,b,c,d,e,f,e,f+h),k=this.collideLineLine(a,b,c,d,e+g,f,e+g,f+h),l=this.collideLineLine(a,b,c,d,e,f,e+g,f),m=this.collideLineLine(a,b,c,d,e,f+h,e+g,f+h)),j||k||l||m?i?n:!0:!1},p5.prototype.collidePointPoly=function(a,b,c){for(var d=!1,e=0,f=0;f<c.length;f++){e=f+1,e==c.length&&(e=0);var g=c[f],h=c[e];(g.y>b&&h.y<b||g.y<b&&h.y>b)&&a<(h.x-g.x)*(b-g.y)/(h.y-g.y)+g.x&&(d=!d)}return d},p5.prototype.collideCirclePoly=function(a,b,c,d,e){void 0==e&&(e=!1);for(var f=0,g=0;g<d.length;g++){f=g+1,f==d.length&&(f=0);var h=d[g],i=d[f],j=this.collideLineCircle(h.x,h.y,i.x,i.y,a,b,c);if(j)return!0}if(1==e){var k=this.collidePointPoly(a,b,d);if(k)return!0}return!1},p5.prototype.collideRectPoly=function(a,b,c,d,e,f){void 0==f&&(f=!1);for(var g=0,h=0;h<e.length;h++){g=h+1,g==e.length&&(g=0);var i=e[h],j=e[g],k=this.collideLineRect(i.x,i.y,j.x,j.y,a,b,c,d);if(k)return!0;if(1==f){var l=this.collidePointPoly(a,b,e);if(l)return!0}}return!1},p5.prototype.collideLinePoly=function(a,b,c,d,e){for(var f=0,g=0;g<e.length;g++){f=g+1,f==e.length&&(f=0);var h=e[g].x,i=e[g].y,j=e[f].x,k=e[f].y,l=this.collideLineLine(a,b,c,d,h,i,j,k);if(l)return!0}return!1},p5.prototype.collidePolyPoly=function(a,b,c){void 0==c&&(c=!1);for(var d=0,e=0;e<a.length;e++){d=e+1,d==a.length&&(d=0);var f=a[e],g=a[d],h=this.collideLinePoly(f.x,f.y,g.x,g.y,b);if(h)return!0;if(1==c&&(h=this.collidePointPoly(b[0].x,b[0].y,a)))return!0}return!1},p5.prototype.collidePointTriangle=function(a,b,c,d,e,f,g,h){var i=this.abs((e-c)*(h-d)-(g-c)*(f-d)),j=this.abs((c-a)*(f-b)-(e-a)*(d-b)),k=this.abs((e-a)*(h-b)-(g-a)*(f-b)),l=this.abs((g-a)*(d-b)-(c-a)*(h-b));return j+k+l==i?!0:!1},p5.prototype.collidePointPoint=function(a,b,c,d,e){return void 0==e&&(e=0),this.dist(a,b,c,d)<=e?!0:!1},p5.prototype.collidePointArc=function(a,b,c,d,e,f,g,h){void 0==h&&(h=0);var i=this.createVector(a,b),j=this.createVector(c,d),k=this.createVector(e,0).rotate(f),l=i.copy().sub(j);if(i.dist(j)<=e+h){var m=k.dot(l),n=k.angleBetween(l);if(m>0&&g/2>=n&&n>=-g/2)return!0}return!1};
+function Powerup() {
+  this.size = Math.random() * 50 + 1;
+  this.x = random() * width;
+  this.y = random() * height;
+  this.direction = [random(), random()];
+}
+
+Powerup.prototype.draw = function() {
+  this.update();
+  push();
+  fill("red");
+  ellipse(this.x, this.y, this.size, this.size);
+  pop();
+};
+Powerup.prototype.update = function() {
+  this.x = this.x + 1 * this.direction[0];
+  this.y = this.y + 1 * this.direction[1];
+
+  if (this.x > width + this.size / 2) {
+    this.x = 0;
+  }
+  if (this.y > height + this.size / 2) {
+    this.y = 0;
+  }
+};
+
+Powerup.prototype.getEffect = function(score) {};
+
+var POWER_DURATION = 10;
 function Player() {
   this.cX = 50;
   this.cY = 50;
@@ -51,6 +80,7 @@ function Player() {
   this.movingRight = true;
   this.speed = 3;
   this.score = 0;
+  this.powerDuration = 0;
 }
 Player.prototype.w = function() {
   return this.size * 2.3;
@@ -124,8 +154,24 @@ Player.prototype.canEat = function(fish) {
   return hit;
 };
 
+Player.prototype.eat = function(fish) {
+  fish.reset();
+  this.addScore();
+};
+
+/**
+ *
+ *
+ * @param {Powerup} powerup
+ */
+Player.prototype.setPower = function(powerup) {
+  this.powerDuration = POWER_DURATION;
+  var power = powerup.getEffect(this.score);
+};
+
 Player.prototype.addScore = function() {
   this.score += 1;
+  this.powerDuration--;
 };
 
 function Fish(x, y) {
@@ -135,6 +181,7 @@ function Fish(x, y) {
 }
 
 Fish.prototype.draw = function() {
+  this.update();
   ellipse(this.x, this.y, this.size, this.size);
 };
 
@@ -151,7 +198,9 @@ Fish.prototype.reset = function() {
 };
 
 var fishes = [];
+var powerups = [];
 var player;
+var MAX_POWERUP_CHANCE;
 function setup() {
   createButton("test");
   createCanvas(600, 480).parent("cv-container");
@@ -161,6 +210,26 @@ function setup() {
     fishes.push(new Fish(x, h));
   }
   player = new Player();
+  MAX_POWERUP_CHANCE = 0.3;
+}
+
+function draw() {
+  resetCV();
+  for (const fish of fishes) {
+    fish.draw();
+    if (player.canEat(fish)) {
+      player.eat(fish);
+      handleSpawns();
+    }
+  }
+  for (var i = 0; i < powerups.length; i++) {
+    powerups[i].draw();
+    if (player.canEat(powerups[i])) {
+      player.setPower(powerups[i]);
+      powerups.splice(i, 1);
+    }
+  }
+  player.draw();
 }
 
 var resetCV = function() {
@@ -168,16 +237,26 @@ var resetCV = function() {
   background(42, 150, 252);
 };
 
-function draw() {
-  resetCV();
-  for (const fish of fishes) {
-    fish.update();
-    fish.draw();
-    if (player.canEat(fish)) {
-      console.log("eating Jean Pierre");
-      fish.reset();
-      player.addScore();
-    }
+var getChanceOfSpawningPowerup = function() {
+  return Math.round(player.score / 10) * 10 / 100;
+};
+
+var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
+  if (chance > MAX_POWERUP_CHANCE) {
+    chance = MAX_POWERUP_CHANCE;
   }
-  player.draw();
-}
+  var r = random();
+  if (r < chance) {
+    powerups.push(new Powerup());
+  }
+};
+
+var handleSpawns = function() {
+  var chance = getChanceOfSpawningPowerup();
+  console.log(chance);
+  if (chance >= 1) {
+    maySpawnPowerup();
+  }
+  chance = chance - Math.floor(chance);
+  maySpawnPowerup(chance);
+};

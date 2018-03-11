@@ -24,4 +24,24 @@ Powerup.prototype.update = function() {
   }
 };
 
-Powerup.prototype.getEffect = function(score) {};
+Powerup.prototype.getEffect = function(score) {
+  var effects = [
+    {
+      name: "reverse",
+      effect: function(player, sec) {
+        if (!player.isReversed) {
+          player.speed *= -1;
+          player.isReversed = true;
+          console.log("reversing player speed: ", player.speed);
+          setTimeout(function() {
+            player.speed *= -1;
+            player.isReversed = false;
+            console.log("reversing player speed: ", player.speed);
+          }, sec * 1000);
+        }
+      }
+    }
+  ];
+
+  return effects[0];
+};

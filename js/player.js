@@ -9,6 +9,7 @@ function Player() {
   this.speed = 3;
   this.score = 0;
   this.powerDuration = 0;
+  this.isReversed = false;
 }
 Player.prototype.w = function() {
   return this.size * 2.3;
@@ -95,6 +96,7 @@ Player.prototype.eat = function(fish) {
 Player.prototype.setPower = function(powerup) {
   this.powerDuration = POWER_DURATION;
   var power = powerup.getEffect(this.score);
+  power.effect(this, 10);
 };
 
 Player.prototype.addScore = function() {
