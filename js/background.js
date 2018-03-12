@@ -21,8 +21,8 @@ function Bubble(size) {
 Bubble.prototype.draw = function() {
   this.update();
   push();
+  noStroke();
   fill("rgba(10,150,33,0.5)");
-
   ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
