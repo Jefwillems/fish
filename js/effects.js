@@ -43,5 +43,27 @@ var effects = [
         }, sec * 1000);
       }
     }
+  },
+  {
+    name: "inverse colors",
+    effect: function(player, sec) {
+      if (!globalSettings.invertColors) {
+        globalSettings.invertColors = true;
+        setTimeout(function() {
+          globalSettings.invertColors = false;
+        }, sec * 1000);
+      }
+    }
+  },
+  {
+    name: "blackout",
+    effect: function(player, sec) {
+      if (!globalSettings.drawBlack) {
+        globalSettings.drawBlack = true;
+        setTimeout(function() {
+          globalSettings.drawBlack = false;
+        }, 1000);
+      }
+    }
   }
 ];

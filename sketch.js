@@ -6,7 +6,7 @@ var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function setup() {
   createCanvas(windowWidth, windowHeight).parent("cv-container");
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     var h = height / 10 * i;
     var x = Math.random() * width;
     fishes.push(new Fish(x, h));
@@ -19,40 +19,55 @@ function setup() {
 function draw() {
   resetCV();
   wbg.draw();
-  if (!gameOver) {
-    for (let fish of fishes) {
-      fish.draw();
-      if (player.canEat(fish)) {
-        if (player.size >= fish.size) {
-          player.eat(fish);
-          handleSpawns();
-        } else {
-          gameOver = true;
-        }
-      }
-    }
-    for (var i = 0; i < powerups.length; i++) {
-      powerups[i].draw();
-      if (player.canEat(powerups[i])) {
-        player.setPower(powerups[i]);
-        powerups.splice(i, 1);
-      }
-    }
-    player.draw();
-  } else {
+  if (globalSettings.drawBlack) {
+    background("black");
     push();
     textSize(48);
     textAlign(CENTER, CENTER);
-    var t = "Game Over!\nScore: " + player.score;
+    fill("white");
+    textStyle(BOLD);
+    var t = "BLACKOUT";
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
     pop();
+  } else {
+    if (!gameOver) {
+      for (let fish of fishes) {
+        fish.draw();
+        if (player.canEat(fish)) {
+          if (player.size >= fish.size) {
+            player.eat(fish);
+            handleSpawns();
+          } else {
+            gameOver = true;
+          }
+        }
+      }
+      for (var i = 0; i < powerups.length; i++) {
+        powerups[i].draw();
+        if (player.canEat(powerups[i])) {
+          player.setPower(powerups[i]);
+          powerups.splice(i, 1);
+        }
+      }
+      player.draw();
+    } else {
+      push();
+      textSize(48);
+      textAlign(CENTER, CENTER);
+      var t = "Game Over!\nScore: " + player.score;
+      var tW = textWidth(t);
+      text(t, width / 2, height / 2);
+      pop();
+    }
   }
 }
 
 var resetCV = function() {
   clear();
-  background(42, 150, 252);
+  var c;
+  c = color(42, 150, 252);
+  background(c);
 };
 
 var getChanceOfSpawningPowerup = function() {

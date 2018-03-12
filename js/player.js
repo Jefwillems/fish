@@ -114,5 +114,8 @@ Player.prototype.getEffectText = function() {
   if (this.isSpedUp) {
     str += "Faster speed\n";
   }
+  if (globalSettings.stroboEnabled) {
+    str += "Stroboscope\n";
+  }
   return str;
 };
