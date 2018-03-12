@@ -23,6 +23,12 @@ Powerup.prototype.update = function() {
   if (this.y > height + this.size / 2) {
     this.y = 0;
   }
+  if (this.x < 0 - this.size / 2) {
+    this.x = width;
+  }
+  if (this.y < 0 - this.size / 2) {
+    this.y = height;
+  }
 };
 
 Powerup.prototype.getEffect = function(score) {

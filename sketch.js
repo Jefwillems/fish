@@ -1,6 +1,7 @@
 var fishes = [];
 var powerups = [];
 var player;
+var wbg;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function setup() {
@@ -12,11 +13,13 @@ function setup() {
     fishes.push(new Fish(x, h));
   }
   player = new Player();
+  wbg = new WaterBackground();
   MAX_POWERUP_CHANCE = 0.2;
 }
 
 function draw() {
   resetCV();
+  wbg.draw();
   if (!gameOver) {
     for (const fish of fishes) {
       fish.draw();

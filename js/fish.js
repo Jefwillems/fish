@@ -17,8 +17,14 @@ Fish.prototype.update = function() {
   if (this.x > width + this.size / 2) {
     this.x = 0;
   }
+  if (this.x < 0 - this.size / 2) {
+    this.x = width;
+  }
   if (this.y > height + this.size / 2) {
     this.y = 0;
+  }
+  if (this.y < 0 - this.size / 2) {
+    this.y = height;
   }
 };
 
