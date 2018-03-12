@@ -1,8 +1,8 @@
 function WaterBackground() {
-  var amountBubbles = random() * 12;
+  var amountBubbles = random() * 20;
   this.bubbles = [];
   for (let i = 0; i < amountBubbles; i++) {
-    this.bubbles.push(new Bubble(random() * 20));
+    this.bubbles.push(new Bubble(random() * 40));
   }
 }
 

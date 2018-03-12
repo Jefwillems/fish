@@ -58,7 +58,9 @@ Player.prototype.draw = function() {
   pop();
   push();
   textSize(32);
-  text("Score: " + this.score, 10, 30);
+  var t = "Score: " + this.score + "\n";
+  t += this.getEffectText();
+  text(t, 10, 30);
   pop();
 };
 
@@ -99,4 +101,18 @@ Player.prototype.setPower = function(powerup) {
 
 Player.prototype.addScore = function() {
   this.score += 1;
+};
+
+Player.prototype.getEffectText = function() {
+  var str = "Effects: \n";
+  if (this.isReversed) {
+    str += "Reverse controls\n";
+  }
+  if (this.isSlowedDown) {
+    str += "Slower speed\n";
+  }
+  if (this.isSpedUp) {
+    str += "Faster speed\n";
+  }
+  return str;
 };
