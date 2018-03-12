@@ -139,7 +139,7 @@ var effects = [
 ];
 
 function Powerup() {
-  this.size = Math.random() * 50 + 1;
+  this.size = 25;
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
@@ -179,7 +179,7 @@ var POWER_DURATION = 10;
 function Player() {
   this.cX = 50;
   this.cY = 50;
-  this.size = Math.random() * 50 + 1;
+  this.size = 20;
   this.angle = PI / 2;
   this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;
@@ -312,6 +312,7 @@ Fish.prototype.reset = function(playerSize) {
   var sizeMultiplier = random() * 0.1 + 1;
   this.size *= sizeMultiplier;
   this.x = random() * width;
+  this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 };
 
@@ -322,8 +323,7 @@ var wbg;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function setup() {
-  createButton("test");
-  createCanvas(600, 480).parent("cv-container");
+  createCanvas(windowWidth, windowHeight).parent("cv-container");
   for (let i = 0; i < 10; i++) {
     var h = height / 10 * i;
     var x = Math.random() * width;
@@ -338,7 +338,7 @@ function draw() {
   resetCV();
   wbg.draw();
   if (!gameOver) {
-    for (const fish of fishes) {
+    for (let fish of fishes) {
       fish.draw();
       if (player.canEat(fish)) {
         if (player.size >= fish.size) {
@@ -396,3 +396,7 @@ var handleSpawns = function() {
   chance = chance - Math.floor(chance);
   maySpawnPowerup(chance);
 };
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}

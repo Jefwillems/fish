@@ -2,7 +2,7 @@ var POWER_DURATION = 10;
 function Player() {
   this.cX = 50;
   this.cY = 50;
-  this.size = Math.random() * 50 + 1;
+  this.size = 20;
   this.angle = PI / 2;
   this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;

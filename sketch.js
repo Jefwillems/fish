@@ -5,8 +5,7 @@ var wbg;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function setup() {
-  createButton("test");
-  createCanvas(600, 480).parent("cv-container");
+  createCanvas(windowWidth, windowHeight).parent("cv-container");
   for (let i = 0; i < 10; i++) {
     var h = height / 10 * i;
     var x = Math.random() * width;
@@ -21,7 +20,7 @@ function draw() {
   resetCV();
   wbg.draw();
   if (!gameOver) {
-    for (const fish of fishes) {
+    for (let fish of fishes) {
       fish.draw();
       if (player.canEat(fish)) {
         if (player.size >= fish.size) {
@@ -79,3 +78,7 @@ var handleSpawns = function() {
   chance = chance - Math.floor(chance);
   maySpawnPowerup(chance);
 };
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}

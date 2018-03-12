@@ -1,5 +1,5 @@
 function Powerup() {
-  this.size = Math.random() * 50 + 1;
+  this.size = 25;
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];

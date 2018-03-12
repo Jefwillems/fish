@@ -32,5 +32,6 @@ Fish.prototype.reset = function(playerSize) {
   var sizeMultiplier = random() * 0.1 + 1;
   this.size *= sizeMultiplier;
   this.x = random() * width;
+  this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 };
