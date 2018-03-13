@@ -4,7 +4,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed *= -1;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= -1;
@@ -18,7 +18,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed /= 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= 2;
@@ -32,7 +32,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed *= 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed /= 2;
@@ -46,7 +46,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.pointsMultiplier = 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.pointsMultiplier = 1;

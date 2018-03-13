@@ -388,23 +388,16 @@ Fish.prototype.reset = function(playerSize) {
 var fishes = [];
 var powerups = [];
 var player;
-var wbg;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
-function setup() {
-  createCanvas(windowWidth, windowHeight).parent("cv-container");
+function Game() {
   for (let i = 0; i < 30; i++) {
     fishes.push(new Fish());
   }
   player = new Player();
-  wbg = new WaterBackground();
   MAX_POWERUP_CHANCE = 0.2;
 }
-
-function draw() {
-  resetCV();
-  wbg.draw();
-
+Game.prototype.draw = function() {
   if (!gameOver) {
     for (let fish of fishes) {
       fish.draw();
@@ -434,13 +427,6 @@ function draw() {
     text(t, width / 2, height / 2);
     pop();
   }
-}
-
-var resetCV = function() {
-  clear();
-  var c;
-  c = color(42, 150, 252);
-  background(c);
 };
 
 var getChanceOfSpawningPowerup = function() {
@@ -469,3 +455,34 @@ var handleSpawns = function() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+function Menu() {}
+Menu.prototype.draw = function() {};
+
+function GameState() {
+  this.state = new Menu();
+}
+
+GameState.prototype.draw = function() {
+  this.state.draw();
+};
+
+var state;
+var wbg;
+function setup() {
+  createCanvas(windowWidth, windowHeight).parent("cv-container");
+  wbg = new WaterBackground();
+  state = new GameState();
+}
+function draw() {
+  resetCV();
+  wbg.draw();
+  state.draw();
+}
+
+var resetCV = function() {
+  clear();
+  var c;
+  c = color(42, 150, 252);
+  background(c);
+};
