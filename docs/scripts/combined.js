@@ -461,23 +461,75 @@ function MenuButton(x, y, w, h) {
   this.y = y;
   this.w = w;
   this.h = h;
+  this.tS = h - 10;
 }
 
+MenuButton.prototype.setText = function(text) {
+  this.text = text;
+  var tW = textWidth(this.text);
+  this.tX = this.x + this.w / 2;
+  this.tY = this.y + this.h / 2;
+};
+
 MenuButton.prototype.draw = function() {
+  if (!this.text) {
+    throw new Error(
+      "MenuButton.draw() was called but no text was specified. Did you forget to call .setText() ?"
+    );
+  }
   push();
   rect(this.x, this.y, this.w, this.h);
+
+  textSize(this.tS);
+  textAlign(CENTER, CENTER);
+  text(this.text, this.tX, this.tY);
+
   pop();
+};
+
+MenuButton.prototype.setClickHandler = function(cb) {
+  this.cb = cb;
+};
+
+MenuButton.prototype.click = function() {
+  if (!this.cb) {
+    throw new Error(
+      "MenuButton.click() was called but no callback was specified. Did you forget to call .setClickHandler() ?"
+    );
+  }
+  this.cb();
 };
 
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
-  var b = new MenuButton();
+  var w = width * 0.3;
+  var h = 50;
+  var x = width / 2 - w / 2;
+  var y = height / 2 - h / 2;
+  var playButton = new MenuButton(x, y, w, h);
+  playButton.setText("Play Game");
+  playButton.setClickHandler(() => {
+    gameState.setState(new Game());
+  });
+  this.buttons.push(playButton);
 }
 Menu.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
+};
+
+Menu.prototype.mouseClicked = function(mX, mY) {
+  for (var i = 0; i < this.buttons.length; i++) {
+    if (wasButtonClicked(this.buttons[i], mX, mY)) {
+      this.buttons[i].click();
+    }
+  }
+};
+
+var wasButtonClicked = function(button, mX, mY) {
+  return collidePointRect(mX, mY, button.x, button.y, button.w, button.h);
 };
 
 function GameState() {
@@ -492,15 +544,16 @@ GameState.prototype.setState = function(s) {
   this.state = s;
 };
 
+GameState.prototype.mouseClicked = function(mX, mY) {
+  this.state.mouseClicked(mX, mY);
+};
+
 var state;
 var wbg;
 function setup() {
   createCanvas(windowWidth, windowHeight).parent("cv-container");
   wbg = new WaterBackground();
   state = new GameState();
-  setTimeout(() => {
-    state.setState(new Game());
-  }, 2 * 1000);
 }
 function draw() {
   resetCV();
@@ -514,3 +567,8 @@ var resetCV = function() {
   c = color(42, 150, 252);
   background(c);
 };
+
+function mouseClicked() {
+  state.mouseClicked(mouseX, mouseY);
+  return false;
+}
