@@ -9,3 +9,7 @@ GameState.prototype.draw = function() {
 GameState.prototype.setState = function(s) {
   this.state = s;
 };
+
+GameState.prototype.mouseClicked = function(mX, mY) {
+  this.state.mouseClicked(mX, mY);
+};

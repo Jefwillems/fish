@@ -4,9 +4,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight).parent("cv-container");
   wbg = new WaterBackground();
   state = new GameState();
-  setTimeout(() => {
-    state.setState(new Game());
-  }, 2 * 1000);
 }
 function draw() {
   resetCV();
@@ -20,3 +17,8 @@ var resetCV = function() {
   c = color(42, 150, 252);
   background(c);
 };
+
+function mouseClicked() {
+  state.mouseClicked(mouseX, mouseY);
+  return false;
+}
