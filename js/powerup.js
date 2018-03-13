@@ -1,5 +1,9 @@
+var img;
 function Powerup() {
   this.size = 25;
+  if (!img) {
+    img = loadImage("assets/img/powerup.png");
+  }
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
@@ -9,7 +13,8 @@ Powerup.prototype.draw = function() {
   this.update();
   push();
   fill("red");
-  ellipse(this.x, this.y, this.size, this.size);
+  //ellipse(this.x, this.y, this.size, this.size);
+  image(img, this.x, this.y, this.size * 2.23, this.size);
   pop();
 };
 
