@@ -99,13 +99,14 @@ var effects = [
   {
     name: "reverse",
     effect: function(player, sec) {
-      if (!player.isReversed) {
+      if (!player.hasEffect(this.name)) {
         player.speed *= -1;
-        player.isReversed = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("reversing player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= -1;
-          player.isReversed = false;
+          player.removeEffect(n);
           console.log("reversing player speed: ", player.speed);
         }, sec * 1000);
       }
@@ -114,13 +115,14 @@ var effects = [
   {
     name: "slowdown",
     effect: function(player, sec) {
-      if (!player.isSlowedDown) {
+      if (!player.hasEffect(this.name)) {
         player.speed /= 2;
-        player.isSlowedDown = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("slowing down, player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= 2;
-          player.isSlowedDown = false;
+          player.removeEffect(n);
           console.log("speeding back up, player speed: ", player.speed);
         }, sec * 1000);
       }
@@ -129,31 +131,46 @@ var effects = [
   {
     name: "speedup",
     effect: function(player, sec) {
-      if (!player.isSpedUp) {
+      if (!player.hasEffect(this.name)) {
         player.speed *= 2;
-        player.isSpedUp = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("speeding up, player speed: ", player.speed);
         setTimeout(function() {
           player.speed /= 2;
-          player.isSpedUp = false;
+          player.removeEffect(n);
           console.log("speeding back down, player speed: ", player.speed);
         }, sec * 1000);
       }
     }
   },
   {
+    name: "double points",
+    effect: function(player, sec) {
+      if (!player.hasEffect(this.name)) {
+        player.pointsMultiplier = 2;
+        let n = this.name;
+        player.effectText.push(n);
+        setTimeout(function() {
+          player.pointsMultiplier = 1;
+          player.removeEffect(n);
+        }, sec * 1000);
+      }
+    }
+  } /*,
+  {
     name: "inverse colors",
     effect: function(player, sec) {
-      if (!globalSettings.invertColors) {
+      if (!player.hasEffect(this.name)) {
         globalSettings.invertColors = true;
         setTimeout(function() {
           globalSettings.invertColors = false;
         }, sec * 1000);
       }
     }
-  },
+  } ,
   {
-    name: "strobo",
+    name: "blackout",
     effect: function(player, sec) {
       if (!globalSettings.drawBlack) {
         globalSettings.drawBlack = true;
@@ -162,11 +179,15 @@ var effects = [
         }, 1000);
       }
     }
-  }
+  }*/
 ];
 
+var img;
 function Powerup() {
   this.size = 25;
+  if (!img) {
+    img = loadImage("assets/img/powerup.png");
+  }
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
@@ -176,7 +197,8 @@ Powerup.prototype.draw = function() {
   this.update();
   push();
   fill("red");
-  ellipse(this.x, this.y, this.size, this.size);
+  //ellipse(this.x, this.y, this.size, this.size);
+  image(img, this.x, this.y, this.size * 2.23, this.size);
   pop();
 };
 
@@ -199,20 +221,22 @@ Powerup.prototype.update = function() {
 };
 
 Powerup.prototype.getEffect = function(score) {
-  return effects[Math.floor(Math.random() * effects.length)];
+  return effects[floor(random() * effects.length)];
   //return effects[4];
 };
 
 var POWER_DURATION = 10;
 function Player() {
-  this.cX = 50;
-  this.cY = 50;
   this.size = 20;
+  this.cX = width / 2 + 30 * (random() * -2 + 1);
+  this.cY = height / 2 + 30 * (random() * -2 + 1);
   this.angle = PI / 2;
   this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;
   this.speed = 3;
   this.score = 0;
+  this.effectText = [];
+  this.pointsMultiplier = 1;
 }
 Player.prototype.w = function() {
   return this.size * 2.3;
@@ -264,7 +288,10 @@ Player.prototype.draw = function() {
   push();
   textSize(32);
   var t = "Score: " + this.score + "\n";
-  t += this.getEffectText();
+  if (this.effectText.length !== 0) {
+    t += "Effects:\n";
+  }
+  t += this.effectText.join("\n");
   text(t, 10, 30);
   pop();
 };
@@ -299,36 +326,37 @@ Player.prototype.eat = function(fish) {
  *
  * @param {Powerup} powerup
  */
-Player.prototype.setPower = function(powerup) {
+Player.prototype.addPower = function(powerup) {
   var power = powerup.getEffect(this.score);
   power.effect(this, 10);
 };
 
-Player.prototype.addScore = function() {
-  this.score += 1;
+Player.prototype.hasEffect = function(name) {
+  var ret = false;
+  for (var i = 0; i < this.effectText.length; i++) {
+    if (this.effectText[i] === name) {
+      ret = true;
+    }
+  }
+  return ret;
 };
 
-Player.prototype.getEffectText = function() {
-  var str = "Effects: \n";
-  if (this.isReversed) {
-    str += "Reverse controls\n";
+Player.prototype.removeEffect = function(name) {
+  for (var i = this.effectText.length - 1; i >= 0; i--) {
+    if (this.effectText[i] === name) {
+      this.effectText.splice(i, 1);
+    }
   }
-  if (this.isSlowedDown) {
-    str += "Slower speed\n";
-  }
-  if (this.isSpedUp) {
-    str += "Faster speed\n";
-  }
-  if (globalSettings.stroboEnabled) {
-    str += "Stroboscope\n";
-  }
-  return str;
+};
+
+Player.prototype.addScore = function() {
+  this.score += 1 * this.pointsMultiplier;
 };
 
 function Fish(x, y) {
-  this.size = Math.random() * 50 + 1;
-  this.x = x;
-  this.y = y;
+  this.size = random() * 50 + 1;
+  this.x = random() * width;
+  this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
@@ -371,10 +399,8 @@ var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function setup() {
   createCanvas(windowWidth, windowHeight).parent("cv-container");
-  for (let i = 0; i < 20; i++) {
-    var h = height / 10 * i;
-    var x = Math.random() * width;
-    fishes.push(new Fish(x, h));
+  for (let i = 0; i < 30; i++) {
+    fishes.push(new Fish());
   }
   player = new Player();
   wbg = new WaterBackground();
@@ -384,47 +410,35 @@ function setup() {
 function draw() {
   resetCV();
   wbg.draw();
-  if (globalSettings.drawBlack) {
-    background("black");
+
+  if (!gameOver) {
+    for (let fish of fishes) {
+      fish.draw();
+      if (player.canEat(fish)) {
+        if (player.size >= fish.size) {
+          player.eat(fish);
+          handleSpawns();
+        } else {
+          gameOver = true;
+        }
+      }
+    }
+    for (var i = 0; i < powerups.length; i++) {
+      powerups[i].draw();
+      if (player.canEat(powerups[i])) {
+        player.addPower(powerups[i]);
+        powerups.splice(i, 1);
+      }
+    }
+    player.draw();
+  } else {
     push();
     textSize(48);
     textAlign(CENTER, CENTER);
-    fill("white");
-    textStyle(BOLD);
-    var t = "BLACKOUT";
+    var t = "Game Over!\nScore: " + player.score;
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
     pop();
-  } else {
-    if (!gameOver) {
-      for (let fish of fishes) {
-        fish.draw();
-        if (player.canEat(fish)) {
-          if (player.size >= fish.size) {
-            player.eat(fish);
-            handleSpawns();
-          } else {
-            gameOver = true;
-          }
-        }
-      }
-      for (var i = 0; i < powerups.length; i++) {
-        powerups[i].draw();
-        if (player.canEat(powerups[i])) {
-          player.setPower(powerups[i]);
-          powerups.splice(i, 1);
-        }
-      }
-      player.draw();
-    } else {
-      push();
-      textSize(48);
-      textAlign(CENTER, CENTER);
-      var t = "Game Over!\nScore: " + player.score;
-      var tW = textWidth(t);
-      text(t, width / 2, height / 2);
-      pop();
-    }
   }
 }
 
@@ -436,7 +450,7 @@ var resetCV = function() {
 };
 
 var getChanceOfSpawningPowerup = function() {
-  return Math.round(player.score / 10) * 10 / 100;
+  return round(player.score / 10) * 10 / 100;
 };
 
 var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
@@ -455,7 +469,7 @@ var handleSpawns = function() {
   if (chance >= 1) {
     maySpawnPowerup();
   }
-  chance = chance - Math.floor(chance);
+  chance = chance - floor(chance);
   maySpawnPowerup(chance);
 };
 
