@@ -8,6 +8,7 @@ function Player() {
   this.movingRight = true;
   this.speed = 3;
   this.score = 0;
+  this.effectText = [];
 }
 Player.prototype.w = function() {
   return this.size * 2.3;
@@ -59,7 +60,10 @@ Player.prototype.draw = function() {
   push();
   textSize(32);
   var t = "Score: " + this.score + "\n";
-  t += this.getEffectText();
+  if (this.effectText.length !== 0) {
+    t += "Effects:\n";
+  }
+  t += this.effectText.join("\n");
   text(t, 10, 30);
   pop();
 };
@@ -94,28 +98,29 @@ Player.prototype.eat = function(fish) {
  *
  * @param {Powerup} powerup
  */
-Player.prototype.setPower = function(powerup) {
+Player.prototype.addPower = function(powerup) {
   var power = powerup.getEffect(this.score);
   power.effect(this, 10);
 };
 
-Player.prototype.addScore = function() {
-  this.score += 1;
+Player.prototype.hasEffect = function(name) {
+  var ret = false;
+  for (var i = 0; i < this.effectText.length; i++) {
+    if (this.effectText[i] === name) {
+      ret = true;
+    }
+  }
+  return ret;
 };
 
-Player.prototype.getEffectText = function() {
-  var str = "Effects: \n";
-  if (this.isReversed) {
-    str += "Reverse controls\n";
+Player.prototype.removeEffect = function(name) {
+  for (var i = this.effectText.length - 1; i >= 0; i--) {
+    if (this.effectText[i] === name) {
+      this.effectText.splice(i, 1);
+    }
   }
-  if (this.isSlowedDown) {
-    str += "Slower speed\n";
-  }
-  if (this.isSpedUp) {
-    str += "Faster speed\n";
-  }
-  if (globalSettings.stroboEnabled) {
-    str += "Stroboscope\n";
-  }
-  return str;
+};
+
+Player.prototype.addScore = function() {
+  this.score += 1;
 };

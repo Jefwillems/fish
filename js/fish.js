@@ -1,7 +1,7 @@
 function Fish(x, y) {
-  this.size = Math.random() * 50 + 1;
-  this.x = x;
-  this.y = y;
+  this.size = random() * 50 + 1;
+  this.x = random() * width;
+  this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 

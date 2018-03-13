@@ -2,13 +2,14 @@ var effects = [
   {
     name: "reverse",
     effect: function(player, sec) {
-      if (!player.isReversed) {
+      if (!player.hasEffect(this.name)) {
         player.speed *= -1;
-        player.isReversed = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("reversing player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= -1;
-          player.isReversed = false;
+          player.removeEffect(n);
           console.log("reversing player speed: ", player.speed);
         }, sec * 1000);
       }
@@ -17,13 +18,14 @@ var effects = [
   {
     name: "slowdown",
     effect: function(player, sec) {
-      if (!player.isSlowedDown) {
+      if (!player.hasEffect(this.name)) {
         player.speed /= 2;
-        player.isSlowedDown = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("slowing down, player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= 2;
-          player.isSlowedDown = false;
+          player.removeEffect(n);
           console.log("speeding back up, player speed: ", player.speed);
         }, sec * 1000);
       }
@@ -32,29 +34,30 @@ var effects = [
   {
     name: "speedup",
     effect: function(player, sec) {
-      if (!player.isSpedUp) {
+      if (!player.hasEffect(this.name)) {
         player.speed *= 2;
-        player.isSpedUp = true;
+        let n = this.name;
+        player.effectText.push(n);
         console.log("speeding up, player speed: ", player.speed);
         setTimeout(function() {
           player.speed /= 2;
-          player.isSpedUp = false;
+          player.removeEffect(n);
           console.log("speeding back down, player speed: ", player.speed);
         }, sec * 1000);
       }
     }
-  },
+  } /*,
   {
     name: "inverse colors",
     effect: function(player, sec) {
-      if (!globalSettings.invertColors) {
+      if (!player.hasEffect(this.name)) {
         globalSettings.invertColors = true;
         setTimeout(function() {
           globalSettings.invertColors = false;
         }, sec * 1000);
       }
     }
-  },
+  } ,
   {
     name: "blackout",
     effect: function(player, sec) {
@@ -65,5 +68,5 @@ var effects = [
         }, 1000);
       }
     }
-  }
+  }*/
 ];
