@@ -1,8 +1,8 @@
 var POWER_DURATION = 10;
 function Player() {
-  this.cX = 50;
-  this.cY = 50;
   this.size = 20;
+  this.cX = width / 2 + 30 * (random() * -2 + 1);
+  this.cY = height / 2 + 30 * (random() * -2 + 1);
   this.angle = PI / 2;
   this.img = loadImage("assets/img/fish.png");
   this.movingRight = true;
