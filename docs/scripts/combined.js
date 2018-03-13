@@ -500,7 +500,7 @@ function setup() {
   state = new GameState();
   setTimeout(() => {
     state.setState(new Game());
-  }, 5 * 1000);
+  }, 2 * 1000);
 }
 function draw() {
   resetCV();
