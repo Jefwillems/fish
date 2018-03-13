@@ -9,6 +9,7 @@ function Player() {
   this.speed = 3;
   this.score = 0;
   this.effectText = [];
+  this.pointsMultiplier = 1;
 }
 Player.prototype.w = function() {
   return this.size * 2.3;
@@ -122,5 +123,5 @@ Player.prototype.removeEffect = function(name) {
 };
 
 Player.prototype.addScore = function() {
-  this.score += 1;
+  this.score += 1 * this.pointsMultiplier;
 };

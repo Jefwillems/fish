@@ -46,6 +46,20 @@ var effects = [
         }, sec * 1000);
       }
     }
+  },
+  {
+    name: "double points",
+    effect: function(player, sec) {
+      if (!player.hasEffect(this.name)) {
+        player.pointsMultiplier = 2;
+        let n = this.name;
+        player.effectText.push(n);
+        setTimeout(function() {
+          player.pointsMultiplier = 1;
+          player.removeEffect(n);
+        }, sec * 1000);
+      }
+    }
   } /*,
   {
     name: "inverse colors",

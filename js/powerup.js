@@ -37,6 +37,6 @@ Powerup.prototype.update = function() {
 };
 
 Powerup.prototype.getEffect = function(score) {
-  return effects[Math.floor(Math.random() * effects.length)];
+  return effects[floor(random() * effects.length)];
   //return effects[4];
 };

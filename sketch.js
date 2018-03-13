@@ -57,7 +57,7 @@ var resetCV = function() {
 };
 
 var getChanceOfSpawningPowerup = function() {
-  return Math.round(player.score / 10) * 10 / 100;
+  return round(player.score / 10) * 10 / 100;
 };
 
 var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
@@ -76,7 +76,7 @@ var handleSpawns = function() {
   if (chance >= 1) {
     maySpawnPowerup();
   }
-  chance = chance - Math.floor(chance);
+  chance = chance - floor(chance);
   maySpawnPowerup(chance);
 };
 
