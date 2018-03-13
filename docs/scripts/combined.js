@@ -50,7 +50,7 @@ var globalSettings = {
 function WaterBackground() {
   var amountBubbles = random() * 20;
   this.bubbles = [];
-  for (let i = 0; i < amountBubbles; i++) {
+  for (var i = 0; i < amountBubbles; i++) {
     this.bubbles.push(new Bubble(random() * 40));
   }
 }
@@ -101,7 +101,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed *= -1;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= -1;
@@ -115,7 +115,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed /= 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= 2;
@@ -129,7 +129,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.speed *= 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.speed /= 2;
@@ -143,7 +143,7 @@ var effects = [
     effect: function(player, sec) {
       if (!player.hasEffect(this.name)) {
         player.pointsMultiplier = 2;
-        let n = this.name;
+        var n = this.name;
         player.effectText.push(n);
         setTimeout(function() {
           player.pointsMultiplier = 1;
@@ -391,7 +391,7 @@ var player;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
 function Game() {
-  for (let i = 0; i < 30; i++) {
+  for (var i = 0; i < 30; i++) {
     fishes.push(new Fish());
   }
   player = new Player();
@@ -399,7 +399,7 @@ function Game() {
 }
 Game.prototype.draw = function() {
   if (!gameOver) {
-    for (let fish of fishes) {
+    for (var fish of fishes) {
       fish.draw();
       if (player.canEat(fish)) {
         if (player.size >= fish.size) {
@@ -456,15 +456,40 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-function Menu() {}
-Menu.prototype.draw = function() {};
+function MenuButton(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+}
+
+MenuButton.prototype.draw = function() {
+  push();
+  rect(this.x, this.y, this.w, this.h);
+  pop();
+};
+
+function Menu(gameState) {
+  this.gameState = gameState;
+  this.buttons = [];
+  var b = new MenuButton();
+}
+Menu.prototype.draw = function() {
+  for (var i = 0; i < this.buttons.length; i++) {
+    this.buttons[i].draw();
+  }
+};
 
 function GameState() {
-  this.state = new Menu();
+  this.state = new Menu(this);
 }
 
 GameState.prototype.draw = function() {
   this.state.draw();
+};
+
+GameState.prototype.setState = function(s) {
+  this.state = s;
 };
 
 var state;
@@ -473,6 +498,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight).parent("cv-container");
   wbg = new WaterBackground();
   state = new GameState();
+  setTimeout(() => {
+    state.setState(new Game());
+  }, 5 * 1000);
 }
 function draw() {
   resetCV();
