@@ -1,4 +1,5 @@
 var globalSettings = {
   invertColors: false,
-  drawBlack: false
+  drawBlack: false,
+  aboutUrl: "https://github.com/Jefwillems/fish"
 };

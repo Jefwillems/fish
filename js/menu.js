@@ -5,12 +5,24 @@ function Menu(gameState) {
   var h = 50;
   var x = width / 2 - w / 2;
   var y = height / 2 - h / 2;
+
   var playButton = new MenuButton(x, y, w, h);
   playButton.setText("Play Game");
   playButton.setClickHandler(() => {
     gameState.setState(new Game());
   });
   this.buttons.push(playButton);
+
+  var aboutW = w / 2 - 25;
+  var aboutY = y + h + 25;
+
+  var aboutButton = new MenuButton(x, aboutY, aboutW, h);
+  aboutButton.setText("About");
+  aboutButton.setClickHandler(() => {
+    var win = window.open(globalSettings.aboutUrl, "_blank");
+    win.focus();
+  });
+  this.buttons.push(aboutButton);
 }
 Menu.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
