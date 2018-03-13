@@ -72,7 +72,6 @@ var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
 
 var handleSpawns = function() {
   var chance = getChanceOfSpawningPowerup();
-  console.log(chance);
   if (chance >= 1) {
     maySpawnPowerup();
   }

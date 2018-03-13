@@ -103,11 +103,9 @@ var effects = [
         player.speed *= -1;
         let n = this.name;
         player.effectText.push(n);
-        console.log("reversing player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= -1;
           player.removeEffect(n);
-          console.log("reversing player speed: ", player.speed);
         }, sec * 1000);
       }
     }
@@ -119,11 +117,9 @@ var effects = [
         player.speed /= 2;
         let n = this.name;
         player.effectText.push(n);
-        console.log("slowing down, player speed: ", player.speed);
         setTimeout(function() {
           player.speed *= 2;
           player.removeEffect(n);
-          console.log("speeding back up, player speed: ", player.speed);
         }, sec * 1000);
       }
     }
@@ -135,11 +131,9 @@ var effects = [
         player.speed *= 2;
         let n = this.name;
         player.effectText.push(n);
-        console.log("speeding up, player speed: ", player.speed);
         setTimeout(function() {
           player.speed /= 2;
           player.removeEffect(n);
-          console.log("speeding back down, player speed: ", player.speed);
         }, sec * 1000);
       }
     }
@@ -465,7 +459,6 @@ var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
 
 var handleSpawns = function() {
   var chance = getChanceOfSpawningPowerup();
-  console.log(chance);
   if (chance >= 1) {
     maySpawnPowerup();
   }
