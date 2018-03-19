@@ -7,6 +7,7 @@ GameState.prototype.draw = function() {
 };
 
 GameState.prototype.setState = function(s) {
+  this.state = null;
   this.state = s;
 };
 

@@ -1,21 +1,21 @@
-var fishes = [];
-var powerups = [];
-var enemies = [];
-
-var player;
-var MAX_POWERUP_CHANCE;
-var gameOver = false;
 function Game(gameState) {
+  this.fishes = [];
+  this.powerups = [];
+  this.enemies = [];
+
+  this.layer;
+  this.MAX_POWERUP_CHANCE;
+  this.gameOver = false;
   this.buttons = [];
   this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
-    fishes.push(new Fish());
+    this.fishes.push(new Fish());
   }
   for (var i = 0; i < random() * 8 + 3; i++) {
-    enemies.push(new Enemy());
+    this.enemies.push(new Enemy());
   }
-  player = new Player();
-  MAX_POWERUP_CHANCE = 0.2;
+  this.player = new Player();
+  this.MAX_POWERUP_CHANCE = 0.2;
 
   this.restartBtn = new MenuButton(width / 2, height / 2 + 75, 20, 50);
 
@@ -26,37 +26,37 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
-  if (!gameOver) {
-    for (var fish of fishes) {
+  if (!this.gameOver) {
+    for (var fish of this.fishes) {
       fish.draw();
-      if (player.canEat(fish)) {
-        if (player.size >= fish.size) {
-          player.eat(fish);
-          handleSpawns();
+      if (this.player.canEat(fish)) {
+        if (this.player.size >= fish.size) {
+          this.player.eat(fish);
+          this.handleSpawns();
         } else {
-          gameOver = true;
+          this.gameOver = true;
         }
       }
     }
-    for (var enemy of enemies) {
+    for (var enemy of this.enemies) {
       enemy.draw();
-      if (player.canEat(enemy)) {
-        gameOver = true;
+      if (this.player.canEat(enemy)) {
+        this.gameOver = true;
       }
     }
-    for (var i = 0; i < powerups.length; i++) {
-      powerups[i].draw();
-      if (player.canEat(powerups[i])) {
-        player.addPower(powerups[i]);
-        powerups.splice(i, 1);
+    for (var i = 0; i < this.powerups.length; i++) {
+      this.powerups[i].draw();
+      if (this.player.canEat(this.powerups[i])) {
+        this.player.addPower(this.powerups[i]);
+        this.powerups.splice(i, 1);
       }
     }
-    player.draw();
+    this.player.draw();
   } else {
     push();
     textSize(48);
     textAlign(CENTER, CENTER);
-    var t = "Game Over!\nScore: " + player.score;
+    var t = "Game Over!\nScore: " + this.player.score;
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
 
@@ -71,27 +71,27 @@ Game.prototype.draw = function() {
   }
 };
 
-var getChanceOfSpawningPowerup = function() {
-  return round(player.score / 10) * 10 / 100;
+Game.prototype.getChanceOfSpawningPowerup = function() {
+  return round(this.player.score / 10) * 10 / 100;
 };
 
-var maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
-  if (chance > MAX_POWERUP_CHANCE) {
-    chance = MAX_POWERUP_CHANCE;
+Game.prototype.maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
+  if (chance > this.MAX_POWERUP_CHANCE) {
+    chance = this.MAX_POWERUP_CHANCE;
   }
   var r = random();
   if (r < chance) {
-    powerups.push(new Powerup());
+    this.powerups.push(new Powerup());
   }
 };
 
-var handleSpawns = function() {
-  var chance = getChanceOfSpawningPowerup();
+Game.prototype.handleSpawns = function() {
+  var chance = this.getChanceOfSpawningPowerup();
   if (chance >= 1) {
-    maySpawnPowerup();
+    this.maySpawnPowerup();
   }
   chance = chance - floor(chance);
-  maySpawnPowerup(chance);
+  this.maySpawnPowerup(chance);
 };
 
 function windowResized() {

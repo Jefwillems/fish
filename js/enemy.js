@@ -7,8 +7,8 @@ function Enemy() {
 }
 
 Enemy.prototype.update = function() {
-  this.x = this.x + 1 * this.direction[0];
-  this.y = this.y + 1 * this.direction[1];
+  this.x = this.x + globalSettings.enemySpeed * this.direction[0];
+  this.y = this.y + globalSettings.enemySpeed * this.direction[1];
 
   if (this.x > width + this.size / 2) {
     this.x = 0;
