@@ -9,7 +9,6 @@
     "p5": "^0.6.0"
   },
   "devDependencies": {
-    "gift": "^0.10.2",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.9.2",
     "gulp-concat": "^2.6.1",
