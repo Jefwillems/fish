@@ -1,16 +1,12 @@
-function Fish(x, y) {
-  this.size = random() * 50 + 1;
+function Enemy() {
   this.x = random() * width;
   this.y = random() * height;
+  this.size = globalSettings.enemySize;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
+  this.speed = globalSettings.enemySpeed;
 }
 
-Fish.prototype.draw = function() {
-  this.update();
-  ellipse(this.x, this.y, this.size, this.size);
-};
-
-Fish.prototype.update = function() {
+Enemy.prototype.update = function() {
   this.x = this.x + 1 * this.direction[0];
   this.y = this.y + 1 * this.direction[1];
 
@@ -28,9 +24,15 @@ Fish.prototype.update = function() {
   }
 };
 
-Fish.prototype.reset = function(playerSize) {
-  this.size = playerSize + random() * 8 - 4;
-  this.x = random() * width;
-  this.y = random() * height;
-  this.direction = [random() * 2 - 1, random() * 2 - 1];
+Enemy.prototype.draw = function() {
+  this.update();
+  push();
+  fill("yellow");
+  stroke("red");
+  strokeWeight(10);
+  ellipse(this.x, this.y, this.size, this.size);
+  noStroke();
+  fill("blue");
+  ellipse(this.x, this.y, this.size - 25, this.size - 25);
+  pop();
 };

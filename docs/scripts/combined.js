@@ -45,7 +45,9 @@ console.log("### p5.collide ###"),p5.prototype._collideDebug=!1,p5.prototype.col
 var globalSettings = {
   invertColors: false,
   drawBlack: false,
-  aboutUrl: "https://github.com/Jefwillems/fish"
+  aboutUrl: "https://github.com/Jefwillems/fish",
+  enemySpeed: 2,
+  enemySize: 50
 };
 
 function WaterBackground() {
@@ -311,7 +313,7 @@ Player.prototype.canEat = function(fish) {
 };
 
 Player.prototype.eat = function(fish) {
-  this.size += fish.size / 10;
+  this.size += 1;
   fish.reset(this.size);
   this.addScore();
 };
@@ -379,25 +381,78 @@ Fish.prototype.update = function() {
 };
 
 Fish.prototype.reset = function(playerSize) {
-  var sizeMultiplier = random() * 0.1 + 1;
-  this.size *= sizeMultiplier;
+  this.size = playerSize + random() * 8 - 4;
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 };
 
+function Enemy() {
+  this.x = random() * width;
+  this.y = random() * height;
+  this.size = globalSettings.enemySize;
+  this.direction = [random() * 2 - 1, random() * 2 - 1];
+  this.speed = globalSettings.enemySpeed;
+}
+
+Enemy.prototype.update = function() {
+  this.x = this.x + 1 * this.direction[0];
+  this.y = this.y + 1 * this.direction[1];
+
+  if (this.x > width + this.size / 2) {
+    this.x = 0;
+  }
+  if (this.x < 0 - this.size / 2) {
+    this.x = width;
+  }
+  if (this.y > height + this.size / 2) {
+    this.y = 0;
+  }
+  if (this.y < 0 - this.size / 2) {
+    this.y = height;
+  }
+};
+
+Enemy.prototype.draw = function() {
+  this.update();
+  push();
+  fill("yellow");
+  stroke("red");
+  strokeWeight(10);
+  ellipse(this.x, this.y, this.size, this.size);
+  noStroke();
+  fill("blue");
+  ellipse(this.x, this.y, this.size - 25, this.size - 25);
+  pop();
+};
+
 var fishes = [];
 var powerups = [];
+var enemies = [];
+
 var player;
 var MAX_POWERUP_CHANCE;
 var gameOver = false;
-function Game() {
+function Game(gameState) {
+  this.buttons = [];
+  this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
     fishes.push(new Fish());
   }
+  for (var i = 0; i < random() * 8 + 3; i++) {
+    enemies.push(new Enemy());
+  }
   player = new Player();
   MAX_POWERUP_CHANCE = 0.2;
+
+  this.restartBtn = new MenuButton(width / 2, height / 2 + 75, 20, 50);
+
+  this.restartBtn.setClickHandler(() => {
+    this.gameState.setState(new Menu(this.gameState));
+  });
+  this.buttons.push(this.restartBtn);
 }
+
 Game.prototype.draw = function() {
   if (!gameOver) {
     for (var fish of fishes) {
@@ -409,6 +464,12 @@ Game.prototype.draw = function() {
         } else {
           gameOver = true;
         }
+      }
+    }
+    for (var enemy of enemies) {
+      enemy.draw();
+      if (player.canEat(enemy)) {
+        gameOver = true;
       }
     }
     for (var i = 0; i < powerups.length; i++) {
@@ -426,6 +487,14 @@ Game.prototype.draw = function() {
     var t = "Game Over!\nScore: " + player.score;
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
+
+    t = "Main menu";
+    tW = textWidth(t);
+    this.restartBtn.setText(t);
+    this.restartBtn.draw();
+    this.restartBtn.x = width / 2 - tW / 2;
+    this.restartBtn.w = tW;
+    this.restartBtn.h = 50;
     pop();
   }
 };
@@ -456,6 +525,14 @@ var handleSpawns = function() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+Game.prototype.mouseClicked = function(mX, mY) {
+  for (var i = 0; i < this.buttons.length; i++) {
+    if (wasButtonClicked(this.buttons[i], mX, mY)) {
+      this.buttons[i].click();
+    }
+  }
+};
 
 function MenuButton(x, y, w, h) {
   this.x = x;
@@ -504,6 +581,8 @@ MenuButton.prototype.click = function() {
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
+
+  //play button
   var w = width * 0.3;
   var h = 50;
   var x = width / 2 - w / 2;
@@ -512,10 +591,11 @@ function Menu(gameState) {
   var playButton = new MenuButton(x, y, w, h);
   playButton.setText("Play Game");
   playButton.setClickHandler(() => {
-    gameState.setState(new Game());
+    gameState.setState(new Game(this.gameState));
   });
   this.buttons.push(playButton);
 
+  //about button
   var aboutW = w / 2 - 25;
   var aboutY = y + h + 25;
 
@@ -526,7 +606,17 @@ function Menu(gameState) {
     win.focus();
   });
   this.buttons.push(aboutButton);
+
+  // info button
+  var infoX = x + w - aboutW;
+  var infoBtn = new MenuButton(infoX, aboutY, aboutW, h);
+  infoBtn.setText("Info");
+  infoBtn.setClickHandler(() => {
+    console.log("TODO: info menu");
+  });
+  this.buttons.push(infoBtn);
 }
+
 Menu.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();

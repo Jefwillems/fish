@@ -1,6 +1,8 @@
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
+
+  //play button
   var w = width * 0.3;
   var h = 50;
   var x = width / 2 - w / 2;
@@ -9,10 +11,11 @@ function Menu(gameState) {
   var playButton = new MenuButton(x, y, w, h);
   playButton.setText("Play Game");
   playButton.setClickHandler(() => {
-    gameState.setState(new Game());
+    gameState.setState(new Game(this.gameState));
   });
   this.buttons.push(playButton);
 
+  //about button
   var aboutW = w / 2 - 25;
   var aboutY = y + h + 25;
 
@@ -23,7 +26,17 @@ function Menu(gameState) {
     win.focus();
   });
   this.buttons.push(aboutButton);
+
+  // info button
+  var infoX = x + w - aboutW;
+  var infoBtn = new MenuButton(infoX, aboutY, aboutW, h);
+  infoBtn.setText("Info");
+  infoBtn.setClickHandler(() => {
+    console.log("TODO: info menu");
+  });
+  this.buttons.push(infoBtn);
 }
+
 Menu.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();

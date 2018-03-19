@@ -1,5 +1,7 @@
 var globalSettings = {
   invertColors: false,
   drawBlack: false,
-  aboutUrl: "https://github.com/Jefwillems/fish"
+  aboutUrl: "https://github.com/Jefwillems/fish",
+  enemySpeed: 2,
+  enemySize: 50
 };
