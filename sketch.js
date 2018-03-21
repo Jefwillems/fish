@@ -22,3 +22,8 @@ function mouseClicked() {
   state.mouseClicked(mouseX, mouseY);
   return false;
 }
+
+function preload() {
+  globalSettings.jeanPierre = loadImage("assets/img/jp.png");
+  globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
+}
