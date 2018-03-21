@@ -17,12 +17,25 @@ function Game(gameState) {
   this.player = new Player();
   this.MAX_POWERUP_CHANCE = 0.2;
 
-  this.restartBtn = new MenuButton(width / 2, height / 2 + 75, 20, 50);
-
+  textSize(40);
+  var t = "Main menu";
+  var tW = textWidth(t);
+  var bW = tW + 45;
+  this.restartBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 75, bW, 50);
+  this.restartBtn.setText(t);
   this.restartBtn.setClickHandler(() => {
     this.gameState.setState(new Menu(this.gameState));
   });
   this.buttons.push(this.restartBtn);
+
+  t = "Export Score";
+  tW = textWidth(t);
+  this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
+  this.exportBtn.setText("export score");
+  this.exportBtn.setClickHandler(() => {
+    save("score.jpg");
+  });
+  this.buttons.push(this.exportBtn);
 }
 
 Game.prototype.draw = function() {
@@ -59,14 +72,8 @@ Game.prototype.draw = function() {
     var t = "Game Over!\nScore: " + this.player.score;
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
-
-    t = "Main menu";
-    tW = textWidth(t);
-    this.restartBtn.setText(t);
     this.restartBtn.draw();
-    this.restartBtn.x = width / 2 - tW / 2;
-    this.restartBtn.w = tW;
-    this.restartBtn.h = 50;
+    this.exportBtn.draw();
     pop();
   }
 };
