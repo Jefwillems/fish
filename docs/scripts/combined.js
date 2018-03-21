@@ -228,7 +228,7 @@ function Player() {
   this.cX = width / 2 + 30 * (random() * -2 + 1);
   this.cY = height / 2 + 30 * (random() * -2 + 1);
   this.angle = PI / 2;
-  this.img = loadImage("assets/img/fish.png");
+  this.img = globalSettings.playerImg;
   this.movingRight = true;
   this.speed = 3;
   this.score = 0;
@@ -236,7 +236,7 @@ function Player() {
   this.pointsMultiplier = 1;
 }
 Player.prototype.w = function() {
-  return this.size * 2.3;
+  return this.size * 2.84;
 };
 
 Player.prototype.h = function() {
@@ -273,13 +273,16 @@ Player.prototype.move = function() {
 Player.prototype.draw = function() {
   this.move();
   push();
-  var x = this.cX - this.size * 2.3 / 2;
-  var y = this.cY - this.size / 2;
+  var x = this.cX - this.w() / 2;
+  var y = this.cY - this.h() / 2;
+  imageMode(CENTER);
+  rectMode(CORNER);
+  // DEBUG ONLY: rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   if (!this.movingRight) {
     scale(-1.0, 1.0);
-    image(this.img, -1 * x - this.size * 2, y, this.size * 2.3, this.size);
+    image(this.img, -1 * x, y, this.w(), this.h());
   } else {
-    image(this.img, x, y, this.size * 2.3, this.size);
+    image(this.img, x, y, this.w(), this.h());
   }
   pop();
   push();
@@ -299,11 +302,13 @@ Player.prototype.draw = function() {
  * @param {Fish} fish
  */
 Player.prototype.canEat = function(fish) {
+  var x = this.cX - this.w() / 2;
+  var y = this.cY - this.h() / 2;
   var hit = collideRectCircle(
-    this.cX - this.w() / 2,
-    this.cY - this.h() / 2,
-    this.size * 2.3,
-    this.size,
+    x - this.w() / 2,
+    y - this.h() / 2,
+    this.w(),
+    this.h(),
     fish.x,
     fish.y,
     fish.size,
@@ -350,16 +355,21 @@ Player.prototype.addScore = function() {
   this.score += 1 * this.pointsMultiplier;
 };
 
+var jpMargin = 12;
 function Fish(x, y) {
   this.size = random() * 50 + 1;
   this.x = random() * width;
   this.y = random() * height;
+  this.img = globalSettings.jeanPierre;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
 Fish.prototype.draw = function() {
   this.update();
-  ellipse(this.x, this.y, this.size, this.size);
+  push();
+  imageMode(CENTER);
+  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+  pop();
 };
 
 Fish.prototype.update = function() {
@@ -445,12 +455,25 @@ function Game(gameState) {
   this.player = new Player();
   this.MAX_POWERUP_CHANCE = 0.2;
 
-  this.restartBtn = new MenuButton(width / 2, height / 2 + 75, 20, 50);
-
+  textSize(40);
+  var t = "Main menu";
+  var tW = textWidth(t);
+  var bW = tW + 45;
+  this.restartBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 75, bW, 50);
+  this.restartBtn.setText(t);
   this.restartBtn.setClickHandler(() => {
     this.gameState.setState(new Menu(this.gameState));
   });
   this.buttons.push(this.restartBtn);
+
+  t = "Export Score";
+  tW = textWidth(t);
+  this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
+  this.exportBtn.setText("export score");
+  this.exportBtn.setClickHandler(() => {
+    save("score.jpg");
+  });
+  this.buttons.push(this.exportBtn);
 }
 
 Game.prototype.draw = function() {
@@ -487,14 +510,8 @@ Game.prototype.draw = function() {
     var t = "Game Over!\nScore: " + this.player.score;
     var tW = textWidth(t);
     text(t, width / 2, height / 2);
-
-    t = "Main menu";
-    tW = textWidth(t);
-    this.restartBtn.setText(t);
     this.restartBtn.draw();
-    this.restartBtn.x = width / 2 - tW / 2;
-    this.restartBtn.w = tW;
-    this.restartBtn.h = 50;
+    this.exportBtn.draw();
     pop();
   }
 };
@@ -527,6 +544,59 @@ function windowResized() {
 }
 
 Game.prototype.mouseClicked = function(mX, mY) {
+  for (var i = 0; i < this.buttons.length; i++) {
+    if (wasButtonClicked(this.buttons[i], mX, mY)) {
+      this.buttons[i].click();
+    }
+  }
+};
+
+function TextUtil(delimiter, text = "") {
+  this.delimiter = delimiter;
+  this.text = text;
+}
+
+TextUtil.prototype.append = function(text) {
+  this.text += text + this.delimiter;
+  return this;
+};
+
+TextUtil.prototype.build = function() {
+  return this.text;
+};
+
+function Info(gameState) {
+  this.gameState = gameState;
+  this.buttons = [];
+
+  var bw = width * 0.3;
+  var bh = 50;
+  var bx = width / 2 - bw / 2;
+  var by = height - bh - 50;
+
+  var backBtn = new MenuButton(bx, by, bw, bh);
+  backBtn.setText("Back");
+  backBtn.setClickHandler(() => {
+    this.gameState.setState(new Menu(this.gameState));
+  });
+  this.buttons.push(backBtn);
+  this.text = new TextUtil("\n")
+    .append("Catch all the Van Rossems smaller than you!")
+    .append("Watch out for the {?enemy name?}")
+    .append("Control your fish with the arrow keys (sorry mobile users 😿)")
+    .build();
+}
+
+Info.prototype.draw = function() {
+  for (var i = 0; i < this.buttons.length; i++) {
+    this.buttons[i].draw();
+  }
+  textSize(32);
+  textAlign(CENTER);
+  text(this.text, width / 2, (height - 100) / 2);
+};
+
+Info.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
     if (wasButtonClicked(this.buttons[i], mX, mY)) {
       this.buttons[i].click();
@@ -612,7 +682,7 @@ function Menu(gameState) {
   var infoBtn = new MenuButton(infoX, aboutY, aboutW, h);
   infoBtn.setText("Info");
   infoBtn.setClickHandler(() => {
-    console.log("TODO: info menu");
+    gameState.setState(new Info(this.gameState));
   });
   this.buttons.push(infoBtn);
 }
@@ -675,4 +745,9 @@ var resetCV = function() {
 function mouseClicked() {
   state.mouseClicked(mouseX, mouseY);
   return false;
+}
+
+function preload() {
+  globalSettings.jeanPierre = loadImage("assets/img/jp.png");
+  globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
 }

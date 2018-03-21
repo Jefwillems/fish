@@ -32,7 +32,7 @@ function Menu(gameState) {
   var infoBtn = new MenuButton(infoX, aboutY, aboutW, h);
   infoBtn.setText("Info");
   infoBtn.setClickHandler(() => {
-    console.log("TODO: info menu");
+    gameState.setState(new Info(this.gameState));
   });
   this.buttons.push(infoBtn);
 }
