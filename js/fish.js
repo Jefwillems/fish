@@ -1,13 +1,18 @@
+var jpMargin = 12;
 function Fish(x, y) {
   this.size = random() * 50 + 1;
   this.x = random() * width;
   this.y = random() * height;
+  this.img = globalSettings.jeanPierre;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
 Fish.prototype.draw = function() {
   this.update();
-  ellipse(this.x, this.y, this.size, this.size);
+  push();
+  imageMode(CENTER);
+  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+  pop();
 };
 
 Fish.prototype.update = function() {
