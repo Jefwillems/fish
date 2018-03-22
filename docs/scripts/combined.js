@@ -47,7 +47,8 @@ var globalSettings = {
   drawBlack: false,
   aboutUrl: "https://github.com/Jefwillems/fish",
   enemySpeed: 2,
-  enemySize: 50
+  enemySize: 50,
+  debug: false
 };
 
 function WaterBackground() {
@@ -196,6 +197,7 @@ Powerup.prototype.draw = function() {
   fill("red");
   //ellipse(this.x, this.y, this.size, this.size);
   image(img, this.x, this.y, this.size * 2.23, this.size);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
 
@@ -277,7 +279,6 @@ Player.prototype.draw = function() {
   var y = this.cY - this.h() / 2;
   imageMode(CENTER);
   rectMode(CORNER);
-  // DEBUG ONLY: rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   if (!this.movingRight) {
     scale(-1.0, 1.0);
     image(this.img, -1 * x, y, this.w(), this.h());
@@ -285,6 +286,8 @@ Player.prototype.draw = function() {
     image(this.img, x, y, this.w(), this.h());
   }
   pop();
+  if (globalSettings.debug)
+    rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   push();
   textSize(32);
   var t = "Score: " + this.score + "\n";
@@ -292,6 +295,7 @@ Player.prototype.draw = function() {
     t += "Effects:\n";
   }
   t += this.effectText.join("\n");
+
   text(t, 10, 30);
   pop();
 };
@@ -369,6 +373,7 @@ Fish.prototype.draw = function() {
   push();
   imageMode(CENTER);
   image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
 
@@ -433,6 +438,7 @@ Enemy.prototype.draw = function() {
   noStroke();
   fill("blue");
   ellipse(this.x, this.y, this.size - 25, this.size - 25);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
 

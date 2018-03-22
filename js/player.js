@@ -69,6 +69,7 @@ Player.prototype.draw = function() {
     t += "Effects:\n";
   }
   t += this.effectText.join("\n");
+
   text(t, 10, 30);
   pop();
 };
