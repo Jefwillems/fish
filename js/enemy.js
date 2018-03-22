@@ -1,6 +1,11 @@
 function Enemy() {
+  var top = random() < 0.5;
+  if (top) {
+    this.y = random() * 200;
+  } else {
+    this.y = height - random() * 200;
+  }
   this.x = random() * width;
-  this.y = random() * height;
   this.size = globalSettings.enemySize;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
   this.speed = globalSettings.enemySpeed;

@@ -1,7 +1,12 @@
 var jpMargin = 12;
-function Fish(x, y) {
+function Fish() {
   this.size = random() * 50 + 1;
-  this.x = random() * width;
+  var left = random() < 0.5;
+  if (left) {
+    this.x = random() * 300;
+  } else {
+    this.x = width - random() * 300;
+  }
   this.y = random() * height;
   this.img = globalSettings.jeanPierre;
   this.direction = [random() * 2 - 1, random() * 2 - 1];

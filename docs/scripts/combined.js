@@ -360,9 +360,14 @@ Player.prototype.addScore = function() {
 };
 
 var jpMargin = 12;
-function Fish(x, y) {
+function Fish() {
   this.size = random() * 50 + 1;
-  this.x = random() * width;
+  var left = random() < 0.5;
+  if (left) {
+    this.x = random() * 300;
+  } else {
+    this.x = width - random() * 300;
+  }
   this.y = random() * height;
   this.img = globalSettings.jeanPierre;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
@@ -403,8 +408,13 @@ Fish.prototype.reset = function(playerSize) {
 };
 
 function Enemy() {
+  var top = random() < 0.5;
+  if (top) {
+    this.y = random() * 200;
+  } else {
+    this.y = height - random() * 200;
+  }
   this.x = random() * width;
-  this.y = random() * height;
   this.size = globalSettings.enemySize;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
   this.speed = globalSettings.enemySpeed;
