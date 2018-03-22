@@ -53,7 +53,6 @@ Player.prototype.draw = function() {
   var y = this.cY - this.h() / 2;
   imageMode(CENTER);
   rectMode(CORNER);
-  // DEBUG ONLY: rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   if (!this.movingRight) {
     scale(-1.0, 1.0);
     image(this.img, -1 * x, y, this.w(), this.h());
@@ -61,6 +60,8 @@ Player.prototype.draw = function() {
     image(this.img, x, y, this.w(), this.h());
   }
   pop();
+  if (globalSettings.debug)
+    rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   push();
   textSize(32);
   var t = "Score: " + this.score + "\n";

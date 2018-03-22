@@ -34,5 +34,6 @@ Enemy.prototype.draw = function() {
   noStroke();
   fill("blue");
   ellipse(this.x, this.y, this.size - 25, this.size - 25);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };

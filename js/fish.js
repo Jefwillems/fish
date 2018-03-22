@@ -12,6 +12,7 @@ Fish.prototype.draw = function() {
   push();
   imageMode(CENTER);
   image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
 
