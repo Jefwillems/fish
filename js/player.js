@@ -98,6 +98,9 @@ Player.prototype.canEat = function(fish) {
 
 Player.prototype.eat = function(fish) {
   this.size += 1;
+  if (random() > 0.8) {
+    soundManager.playSound("grom");
+  }
   fish.reset(this.size);
   this.addScore();
 };

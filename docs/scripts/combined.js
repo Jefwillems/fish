@@ -361,6 +361,9 @@ Player.prototype.canEat = function(fish) {
 
 Player.prototype.eat = function(fish) {
   this.size += 1;
+  if (random() > 0.8) {
+    soundManager.playSound("grom");
+  }
   fish.reset(this.size);
   this.addScore();
 };
@@ -541,6 +544,7 @@ Game.prototype.draw = function() {
           this.handleSpawns();
         } else {
           this.gameOver = true;
+          soundManager.playSound("schurk");
         }
       }
     }
@@ -548,6 +552,7 @@ Game.prototype.draw = function() {
       enemy.draw();
       if (this.player.canEat(enemy)) {
         this.gameOver = true;
+        soundManager.playSound("schurk");
       }
     }
     for (var i = 0; i < this.powerups.length; i++) {
@@ -849,4 +854,6 @@ function preload() {
   soundManager.addSound("main", "assets/sounds/Main.mp3");
   soundManager.addSound("fast", "assets/sounds/main_fast.mp3");
   soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
+  soundManager.addSound("grom", "assets/sounds/grommel.mp3");
+  soundManager.addSound("schurk", "assets/sounds/schurk.mp3");
 }

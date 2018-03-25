@@ -34,4 +34,6 @@ function preload() {
   soundManager.addSound("main", "assets/sounds/Main.mp3");
   soundManager.addSound("fast", "assets/sounds/main_fast.mp3");
   soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
+  soundManager.addSound("grom", "assets/sounds/grommel.mp3");
+  soundManager.addSound("schurk", "assets/sounds/schurk.mp3");
 }
