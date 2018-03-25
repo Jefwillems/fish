@@ -48,7 +48,9 @@ var globalSettings = {
   aboutUrl: "https://github.com/Jefwillems/fish",
   enemySpeed: 2,
   enemySize: 50,
-  debug: false
+  debug: false,
+  sound: {},
+  soundOn: true
 };
 
 function WaterBackground() {
@@ -493,6 +495,9 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
+  if (!this.music) {
+    this.initSound();
+  }
   if (!this.gameOver) {
     for (var fish of this.fishes) {
       fish.draw();
@@ -565,6 +570,15 @@ Game.prototype.mouseClicked = function(mX, mY) {
       this.buttons[i].click();
     }
   }
+};
+
+Game.prototype.initSound = function() {
+  this.music = globalSettings.sound.main;
+  this.music.loop();
+};
+
+Game.prototype.destroy = function() {
+  this.music.stop();
 };
 
 function TextUtil(delimiter, text = "") {
@@ -704,6 +718,9 @@ function Menu(gameState) {
 }
 
 Menu.prototype.draw = function() {
+  if (!this.music) {
+    this.initSound();
+  }
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
@@ -717,24 +734,52 @@ Menu.prototype.mouseClicked = function(mX, mY) {
   }
 };
 
+Menu.prototype.initSound = function() {
+  this.music = globalSettings.sound.intro;
+  this.music.loop();
+};
+
+Menu.prototype.destroy = function() {
+  this.music.stop();
+};
+
 var wasButtonClicked = function(button, mX, mY) {
   return collidePointRect(mX, mY, button.x, button.y, button.w, button.h);
 };
 
 function GameState() {
+  this.soundOnImg = globalSettings.soundOnImg;
+  this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
 }
 
 GameState.prototype.draw = function() {
   this.state.draw();
+  push();
+  imageMode(CORNER);
+  if (globalSettings.soundOn) {
+    image(this.soundOnImg, 5, height - 55, 50, 50);
+  } else {
+    image(this.soundOffImg, 5, height - 55, 50, 50);
+  }
+  pop();
 };
 
 GameState.prototype.setState = function(s) {
-  this.state = null;
+  this.state.destroy();
   this.state = s;
 };
 
 GameState.prototype.mouseClicked = function(mX, mY) {
+  if (mX > 5 && mX < 55 && mY > height - 55 && mY < height - 5) {
+    globalSettings.soundOn = !globalSettings.soundOn;
+    if (globalSettings.soundOn) {
+      masterVolume(1.0);
+    } else {
+      masterVolume(0.0);
+    }
+    return;
+  }
   this.state.mouseClicked(mX, mY);
 };
 
@@ -766,4 +811,10 @@ function mouseClicked() {
 function preload() {
   globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
+  globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
+  globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
+
+  soundFormats("wav");
+  globalSettings.sound.intro = loadSound("assets/sounds/Intro.wav");
+  globalSettings.sound.main = loadSound("assets/sounds/Main.wav");
 }

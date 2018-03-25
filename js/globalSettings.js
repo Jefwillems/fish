@@ -4,5 +4,7 @@ var globalSettings = {
   aboutUrl: "https://github.com/Jefwillems/fish",
   enemySpeed: 2,
   enemySize: 50,
-  debug: false
+  debug: false,
+  sound: {},
+  soundOn: true
 };

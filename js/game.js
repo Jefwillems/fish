@@ -39,6 +39,9 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
+  if (!this.music) {
+    this.initSound();
+  }
   if (!this.gameOver) {
     for (var fish of this.fishes) {
       fish.draw();
@@ -111,4 +114,13 @@ Game.prototype.mouseClicked = function(mX, mY) {
       this.buttons[i].click();
     }
   }
+};
+
+Game.prototype.initSound = function() {
+  this.music = globalSettings.sound.main;
+  this.music.loop();
+};
+
+Game.prototype.destroy = function() {
+  this.music.stop();
 };

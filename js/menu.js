@@ -38,6 +38,9 @@ function Menu(gameState) {
 }
 
 Menu.prototype.draw = function() {
+  if (!this.music) {
+    this.initSound();
+  }
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
@@ -49,6 +52,15 @@ Menu.prototype.mouseClicked = function(mX, mY) {
       this.buttons[i].click();
     }
   }
+};
+
+Menu.prototype.initSound = function() {
+  this.music = globalSettings.sound.intro;
+  this.music.loop();
+};
+
+Menu.prototype.destroy = function() {
+  this.music.stop();
 };
 
 var wasButtonClicked = function(button, mX, mY) {
