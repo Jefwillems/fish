@@ -30,6 +30,8 @@ function preload() {
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
 
   soundFormats("wav");
-  globalSettings.sound.intro = loadSound("assets/sounds/Intro.mp3");
-  globalSettings.sound.main = loadSound("assets/sounds/Main.mp3");
+  soundManager.addSound("intro", "assets/sounds/Intro.mp3");
+  soundManager.addSound("main", "assets/sounds/Main.mp3");
+  soundManager.addSound("fast", "assets/sounds/main_fast.mp3");
+  soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
 }

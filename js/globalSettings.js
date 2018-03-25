@@ -5,6 +5,5 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  sound: {},
   soundOn: true
 };

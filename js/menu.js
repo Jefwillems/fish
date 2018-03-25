@@ -1,6 +1,7 @@
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
+  this.initSound();
 
   //play button
   var w = width * 0.3;
@@ -38,9 +39,6 @@ function Menu(gameState) {
 }
 
 Menu.prototype.draw = function() {
-  if (!this.music) {
-    this.initSound();
-  }
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
@@ -55,12 +53,11 @@ Menu.prototype.mouseClicked = function(mX, mY) {
 };
 
 Menu.prototype.initSound = function() {
-  this.music = globalSettings.sound.intro;
-  this.music.loop();
+  soundManager.loopSound("intro");
 };
 
 Menu.prototype.destroy = function() {
-  this.music.stop();
+  soundManager.stopSound("intro");
 };
 
 var wasButtonClicked = function(button, mX, mY) {

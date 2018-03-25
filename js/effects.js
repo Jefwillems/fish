@@ -19,10 +19,12 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.speed /= 2;
         var n = this.name;
+        soundManager.setSpeed(player);
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= 2;
           player.removeEffect(n);
+          soundManager.setSpeed(player);
         }, sec * 1000);
       }
     }
@@ -34,9 +36,11 @@ var effects = [
         player.speed *= 2;
         var n = this.name;
         player.effectText.push(n);
+        soundManager.setSpeed(player);
         setTimeout(function() {
           player.speed /= 2;
           player.removeEffect(n);
+          soundManager.setSpeed(player);
         }, sec * 1000);
       }
     }

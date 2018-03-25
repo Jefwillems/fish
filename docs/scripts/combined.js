@@ -49,9 +49,40 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  sound: {},
   soundOn: true
 };
+
+function SoundManager() {
+  this.sounds = Object.create({});
+}
+
+SoundManager.prototype.playSound = function(name) {
+  this.sounds[name].play();
+};
+SoundManager.prototype.loopSound = function(name) {
+  this.sounds[name].loop();
+};
+SoundManager.prototype.stopSound = function(name) {
+  this.sounds[name].stop();
+};
+SoundManager.prototype.addSound = function(name, path) {
+  this.sounds[name] = loadSound(path);
+};
+SoundManager.prototype.setSpeed = function(player) {
+  this.sounds["main"].stop();
+  this.sounds["fast"].stop();
+  this.sounds["slow"].stop();
+  if (player.speed === PLAYER_BASE_SPEED) {
+    this.loopSound("main");
+  } else if (player.speed === PLAYER_BASE_SPEED * 2) {
+    this.loopSound("fast");
+  } else if (player.speed === PLAYER_BASE_SPEED / 2) {
+    this.loopSound("slow");
+  } else {
+    this.loopSound("main");
+  }
+};
+var soundManager = new SoundManager();
 
 function WaterBackground() {
   var amountBubbles = random() * 20;
@@ -122,10 +153,12 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.speed /= 2;
         var n = this.name;
+        soundManager.setSpeed(player);
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= 2;
           player.removeEffect(n);
+          soundManager.setSpeed(player);
         }, sec * 1000);
       }
     }
@@ -137,9 +170,11 @@ var effects = [
         player.speed *= 2;
         var n = this.name;
         player.effectText.push(n);
+        soundManager.setSpeed(player);
         setTimeout(function() {
           player.speed /= 2;
           player.removeEffect(n);
+          soundManager.setSpeed(player);
         }, sec * 1000);
       }
     }
@@ -227,6 +262,7 @@ Powerup.prototype.getEffect = function(score) {
 };
 
 var POWER_DURATION = 10;
+var PLAYER_BASE_SPEED = 3;
 function Player() {
   this.size = 20;
   this.cX = width / 2 + 30 * (random() * -2 + 1);
@@ -234,7 +270,7 @@ function Player() {
   this.angle = PI / 2;
   this.img = globalSettings.playerImg;
   this.movingRight = true;
-  this.speed = 3;
+  this.speed = PLAYER_BASE_SPEED;
   this.score = 0;
   this.effectText = [];
   this.pointsMultiplier = 1;
@@ -458,6 +494,7 @@ function Game(gameState) {
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
+  this.initSound();
 
   this.layer;
   this.MAX_POWERUP_CHANCE;
@@ -495,9 +532,6 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
-  if (!this.music) {
-    this.initSound();
-  }
   if (!this.gameOver) {
     for (var fish of this.fishes) {
       fish.draw();
@@ -573,12 +607,11 @@ Game.prototype.mouseClicked = function(mX, mY) {
 };
 
 Game.prototype.initSound = function() {
-  this.music = globalSettings.sound.main;
-  this.music.loop();
+  soundManager.loopSound("main");
 };
 
 Game.prototype.destroy = function() {
-  this.music.stop();
+  soundManager.stopSound("main");
 };
 
 function TextUtil(delimiter, text = "") {
@@ -681,6 +714,7 @@ MenuButton.prototype.click = function() {
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
+  this.initSound();
 
   //play button
   var w = width * 0.3;
@@ -718,9 +752,6 @@ function Menu(gameState) {
 }
 
 Menu.prototype.draw = function() {
-  if (!this.music) {
-    this.initSound();
-  }
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
@@ -735,12 +766,11 @@ Menu.prototype.mouseClicked = function(mX, mY) {
 };
 
 Menu.prototype.initSound = function() {
-  this.music = globalSettings.sound.intro;
-  this.music.loop();
+  soundManager.loopSound("intro");
 };
 
 Menu.prototype.destroy = function() {
-  this.music.stop();
+  soundManager.stopSound("intro");
 };
 
 var wasButtonClicked = function(button, mX, mY) {
@@ -815,6 +845,8 @@ function preload() {
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
 
   soundFormats("wav");
-  globalSettings.sound.intro = loadSound("assets/sounds/Intro.mp3");
-  globalSettings.sound.main = loadSound("assets/sounds/Main.mp3");
+  soundManager.addSound("intro", "assets/sounds/Intro.mp3");
+  soundManager.addSound("main", "assets/sounds/Main.mp3");
+  soundManager.addSound("fast", "assets/sounds/main_fast.mp3");
+  soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
 }

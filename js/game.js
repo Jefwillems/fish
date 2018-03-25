@@ -2,6 +2,7 @@ function Game(gameState) {
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
+  this.initSound();
 
   this.layer;
   this.MAX_POWERUP_CHANCE;
@@ -39,9 +40,6 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
-  if (!this.music) {
-    this.initSound();
-  }
   if (!this.gameOver) {
     for (var fish of this.fishes) {
       fish.draw();
@@ -117,10 +115,9 @@ Game.prototype.mouseClicked = function(mX, mY) {
 };
 
 Game.prototype.initSound = function() {
-  this.music = globalSettings.sound.main;
-  this.music.loop();
+  soundManager.loopSound("main");
 };
 
 Game.prototype.destroy = function() {
-  this.music.stop();
+  soundManager.stopSound("main");
 };
