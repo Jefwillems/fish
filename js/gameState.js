@@ -2,6 +2,9 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
+  if (!globalSettings.soundOn) {
+    masterVolume(0.0);
+  }
 }
 
 GameState.prototype.draw = function() {
@@ -32,4 +35,16 @@ GameState.prototype.mouseClicked = function(mX, mY) {
     return;
   }
   this.state.mouseClicked(mX, mY);
+};
+
+GameState.prototype.keyTyped = function(character) {
+  if (typeof this.state.keyTyped === "function") {
+    this.state.keyTyped(character);
+  }
+};
+
+GameState.prototype.keyPressed = function(btn) {
+  if (typeof this.state.keyPressed === "function") {
+    this.state.keyPressed(btn);
+  }
 };

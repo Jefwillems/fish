@@ -23,6 +23,14 @@ function mouseClicked() {
   return false;
 }
 
+function keyTyped() {
+  state.keyTyped(key);
+}
+
+function keyPressed() {
+  state.keyPressed(keyCode);
+}
+
 function preload() {
   globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");

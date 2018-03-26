@@ -49,7 +49,8 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  soundOn: true
+  soundOn: false,
+  postUrl: "https://jsonplaceholder.typicode.com/posts"
 };
 
 function SoundManager() {
@@ -83,6 +84,107 @@ SoundManager.prototype.setSpeed = function(player) {
   }
 };
 var soundManager = new SoundManager();
+
+function ExportState(gameState, score) {
+  this.gameState = gameState;
+  this.score = score;
+  this.buttons = [];
+
+  var w = width / 2;
+  var h = 50;
+  var x = width / 2 - w / 2;
+  var y = height / 2;
+  this.editText = new TextField(x, y, w, h);
+
+  y += 75;
+  this.postButton = new MenuButton(x, y, w, h);
+  this.postButton.setText("post score");
+  this.postButton.setClickHandler(() => {
+    console.log("posting score to server");
+    var username = this.editText.text;
+    var score = this.score;
+    var postData = {
+      username: username,
+      score: score
+    };
+    httpPost(
+      globalSettings.postUrl,
+      "json",
+      postData,
+      function(data) {
+        console.log(data);
+        gameState.setState(new Menu(gameState));
+      },
+      function(error) {
+        console.error(error);
+      }
+    );
+  });
+
+  this.buttons.push(this.postButton);
+  this.buttons.push(this.editText);
+}
+
+ExportState.prototype.draw = function() {
+  for (var i = 0; i < this.buttons.length; i++) {
+    this.buttons[i].draw();
+  }
+};
+
+ExportState.prototype.mouseClicked = function(mX, mY) {
+  if (wasButtonClicked(this.postButton, mX, mY)) {
+    this.postButton.click();
+  }
+};
+
+ExportState.prototype.initSound = function() {};
+
+ExportState.prototype.destroy = function() {};
+
+ExportState.prototype.keyPressed = function(btn) {
+  this.editText.keyPressed(btn);
+};
+
+ExportState.prototype.keyTyped = function(character) {
+  this.editText.keyTyped(character);
+};
+
+function TextField(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.tS = h - 10;
+  this.text = "";
+}
+
+TextField.prototype.draw = function() {
+  push();
+  rect(this.x, this.y, this.w, this.h);
+
+  textSize(this.tS);
+  fill("black");
+  textAlign(CENTER, CENTER);
+  var tX = this.x + this.w / 2;
+  var tY = this.y + this.h / 2;
+  text(this.text, tX, tY);
+  pop();
+};
+TextField.prototype.keyPressed = function(btn) {
+  if (btn === BACKSPACE) {
+    this.text = this.text.substring(0, this.text.length - 1);
+  }
+};
+TextField.prototype.keyTyped = function(character) {
+  this.text += character;
+  push();
+  textSize(this.tS);
+  var tW = textWidth(this.text);
+  if (tW > this.w) {
+    this.text = this.text.substring(0, this.text.length - 1);
+  }
+  pop();
+};
 
 function WaterBackground() {
   var amountBubbles = random() * 20;
@@ -529,7 +631,8 @@ function Game(gameState) {
   this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
   this.exportBtn.setText("export score");
   this.exportBtn.setClickHandler(() => {
-    save("score.jpg");
+    //save("score.jpg");
+    this.gameState.setState(new ExportState(this.gameState, this.player.score));
   });
   this.buttons.push(this.exportBtn);
 }
@@ -786,6 +889,9 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
+  if (!globalSettings.soundOn) {
+    masterVolume(0.0);
+  }
 }
 
 GameState.prototype.draw = function() {
@@ -818,6 +924,18 @@ GameState.prototype.mouseClicked = function(mX, mY) {
   this.state.mouseClicked(mX, mY);
 };
 
+GameState.prototype.keyTyped = function(character) {
+  if (typeof this.state.keyTyped === "function") {
+    this.state.keyTyped(character);
+  }
+};
+
+GameState.prototype.keyPressed = function(btn) {
+  if (typeof this.state.keyPressed === "function") {
+    this.state.keyPressed(btn);
+  }
+};
+
 var state;
 var wbg;
 function setup() {
@@ -841,6 +959,14 @@ var resetCV = function() {
 function mouseClicked() {
   state.mouseClicked(mouseX, mouseY);
   return false;
+}
+
+function keyTyped() {
+  state.keyTyped(key);
+}
+
+function keyPressed() {
+  state.keyPressed(keyCode);
 }
 
 function preload() {

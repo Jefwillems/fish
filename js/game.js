@@ -34,7 +34,8 @@ function Game(gameState) {
   this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
   this.exportBtn.setText("export score");
   this.exportBtn.setClickHandler(() => {
-    save("score.jpg");
+    //save("score.jpg");
+    this.gameState.setState(new ExportState(this.gameState, this.player.score));
   });
   this.buttons.push(this.exportBtn);
 }

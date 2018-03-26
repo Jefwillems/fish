@@ -5,5 +5,6 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  soundOn: true
+  soundOn: false,
+  postUrl: "https://jsonplaceholder.typicode.com/posts"
 };
