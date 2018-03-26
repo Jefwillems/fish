@@ -101,10 +101,10 @@ function ExportState(gameState, score) {
   this.postButton.setText("post score");
   this.postButton.setClickHandler(() => {
     console.log("posting score to server");
-    var username = this.editText.text;
+    var username = this.editText;
     var score = this.score;
     var postData = {
-      username: username,
+      username: username.text,
       score: score
     };
     httpPost(
@@ -156,6 +156,9 @@ function TextField(x, y, w, h) {
   this.h = h;
   this.tS = h - 10;
   this.text = "";
+  this.carret = "|";
+  this.counter = 0;
+  this.treshold = 75;
 }
 
 TextField.prototype.draw = function() {
@@ -167,7 +170,14 @@ TextField.prototype.draw = function() {
   textAlign(CENTER, CENTER);
   var tX = this.x + this.w / 2;
   var tY = this.y + this.h / 2;
-  text(this.text, tX, tY);
+  if (this.counter > this.treshold / 2) {
+    text(this.text + this.carret, tX, tY);
+    if (this.counter > this.treshold) this.counter = 0;
+  } else {
+    text(this.text, tX, tY);
+  }
+
+  this.counter++;
   pop();
 };
 TextField.prototype.keyPressed = function(btn) {
@@ -175,6 +185,7 @@ TextField.prototype.keyPressed = function(btn) {
     this.text = this.text.substring(0, this.text.length - 1);
   }
 };
+
 TextField.prototype.keyTyped = function(character) {
   this.text += character;
   push();
@@ -970,11 +981,13 @@ function keyPressed() {
 }
 
 function preload() {
+  // load images
   globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
 
+  // load sounds
   soundFormats("wav");
   soundManager.addSound("intro", "assets/sounds/Intro.mp3");
   soundManager.addSound("main", "assets/sounds/Main.mp3");

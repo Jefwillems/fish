@@ -32,11 +32,13 @@ function keyPressed() {
 }
 
 function preload() {
+  // load images
   globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
 
+  // load sounds
   soundFormats("wav");
   soundManager.addSound("intro", "assets/sounds/Intro.mp3");
   soundManager.addSound("main", "assets/sounds/Main.mp3");

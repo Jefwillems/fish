@@ -14,10 +14,10 @@ function ExportState(gameState, score) {
   this.postButton.setText("post score");
   this.postButton.setClickHandler(() => {
     console.log("posting score to server");
-    var username = this.editText.text;
+    var username = this.editText;
     var score = this.score;
     var postData = {
-      username: username,
+      username: username.text,
       score: score
     };
     httpPost(
