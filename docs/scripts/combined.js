@@ -50,7 +50,7 @@ var globalSettings = {
   enemySize: 50,
   debug: false,
   soundOn: false,
-  postUrl: "https://jsonplaceholder.typicode.com/posts"
+  postUrl: "/api/score/"
 };
 
 function SoundManager() {
@@ -330,12 +330,11 @@ var effects = [
   }*/
 ];
 
-var img;
 function Powerup() {
   this.size = 25;
-  if (!img) {
-    img = loadImage("assets/img/powerup.png");
-  }
+
+  this.img = globalSettings.powerup;
+
   this.x = random() * width;
   this.y = random() * height;
   this.direction = [random() * 2 - 1, random() * 2 - 1];
@@ -346,7 +345,7 @@ Powerup.prototype.draw = function() {
   push();
   fill("red");
   //ellipse(this.x, this.y, this.size, this.size);
-  image(img, this.x, this.y, this.size * 2.23, this.size);
+  image(this.img, this.x, this.y, this.size * 2.23, this.size);
   if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
   pop();
 };
@@ -778,6 +777,8 @@ Info.prototype.draw = function() {
   text(this.text, width / 2, (height - 100) / 2);
 };
 
+Info.prototype.destroy = function() {};
+
 Info.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
     if (wasButtonClicked(this.buttons[i], mX, mY)) {
@@ -986,6 +987,7 @@ function preload() {
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
+  globalSettings.powerup = loadImage("assets/img/powerup.png");
 
   // load sounds
   soundFormats("wav");

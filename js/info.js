@@ -29,6 +29,8 @@ Info.prototype.draw = function() {
   text(this.text, width / 2, (height - 100) / 2);
 };
 
+Info.prototype.destroy = function() {};
+
 Info.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
     if (wasButtonClicked(this.buttons[i], mX, mY)) {

@@ -37,6 +37,7 @@ function preload() {
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
+  globalSettings.powerup = loadImage("assets/img/powerup.png");
 
   // load sounds
   soundFormats("wav");

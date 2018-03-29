@@ -6,5 +6,5 @@ var globalSettings = {
   enemySize: 50,
   debug: false,
   soundOn: false,
-  postUrl: "https://jsonplaceholder.typicode.com/posts"
+  postUrl: "/api/score/"
 };
