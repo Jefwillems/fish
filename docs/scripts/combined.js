@@ -50,7 +50,8 @@ var globalSettings = {
   enemySize: 50,
   debug: false,
   soundOn: false,
-  postUrl: "/api/score/"
+  postUrl: "/api/score/",
+  player_base_speed: 3
 };
 
 function SoundManager() {
@@ -69,15 +70,25 @@ SoundManager.prototype.stopSound = function(name) {
 SoundManager.prototype.addSound = function(name, path) {
   this.sounds[name] = loadSound(path);
 };
+SoundManager.prototype.isPlaying = function(name) {
+  return this.sounds[name].isPlaying();
+};
 SoundManager.prototype.setSpeed = function(player) {
-  this.sounds["main"].stop();
-  this.sounds["fast"].stop();
-  this.sounds["slow"].stop();
-  if (player.speed === PLAYER_BASE_SPEED) {
+  if (this.isPlaying("main")) {
+    this.sounds["main"].stop();
+  }
+  if (this.isPlaying("fast")) {
+    this.sounds["fast"].stop();
+  }
+  if (this.isPlaying("slow")) {
+    this.sounds["slow"].stop();
+  }
+
+  if (player.speed === globalSettings.player_base_speed) {
     this.loopSound("main");
-  } else if (player.speed === PLAYER_BASE_SPEED * 2) {
+  } else if (player.speed === globalSettings.player_base_speed * 2) {
     this.loopSound("fast");
-  } else if (player.speed === PLAYER_BASE_SPEED / 2) {
+  } else if (player.speed === globalSettings.player_base_speed / 2) {
     this.loopSound("slow");
   } else {
     this.loopSound("main");
@@ -374,7 +385,6 @@ Powerup.prototype.getEffect = function(score) {
 };
 
 var POWER_DURATION = 10;
-var PLAYER_BASE_SPEED = 3;
 function Player() {
   this.size = 20;
   this.cX = width / 2 + 30 * (random() * -2 + 1);
@@ -382,7 +392,7 @@ function Player() {
   this.angle = PI / 2;
   this.img = globalSettings.playerImg;
   this.movingRight = true;
-  this.speed = PLAYER_BASE_SPEED;
+  this.speed = globalSettings.player_base_speed;
   this.score = 0;
   this.effectText = [];
   this.pointsMultiplier = 1;

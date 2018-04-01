@@ -6,5 +6,6 @@ var globalSettings = {
   enemySize: 50,
   debug: false,
   soundOn: false,
-  postUrl: "/api/score/"
+  postUrl: "/api/score/",
+  player_base_speed: 3
 };

@@ -1,5 +1,4 @@
 var POWER_DURATION = 10;
-var PLAYER_BASE_SPEED = 3;
 function Player() {
   this.size = 20;
   this.cX = width / 2 + 30 * (random() * -2 + 1);
@@ -7,7 +6,7 @@ function Player() {
   this.angle = PI / 2;
   this.img = globalSettings.playerImg;
   this.movingRight = true;
-  this.speed = PLAYER_BASE_SPEED;
+  this.speed = globalSettings.player_base_speed;
   this.score = 0;
   this.effectText = [];
   this.pointsMultiplier = 1;
