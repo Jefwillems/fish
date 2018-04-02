@@ -76,28 +76,30 @@ SoundManager.prototype.addSound = function(name, path) {
 SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
+SoundManager.prototype.reverse = function(player) {
+  this.stopAll();
+  if (this.isPlaying("reverse")) {
+    this.setSpeed(player);
+  } else {
+    this.loopSound("reverse");
+  }
+};
 SoundManager.prototype.gameOver = function() {
+  this.stopAll();
   if (!this.isPlaying("main")) {
     this.loopSound("main");
   }
-  if (this.isPlaying("fast")) {
-    this.sounds["fast"].stop();
-  }
-  if (this.isPlaying("slow")) {
-    this.sounds["slow"].stop();
-  }
   this.playSound("schurk");
 };
+SoundManager.prototype.stopAll = function() {
+  for (sound in this.sounds) {
+    if (this.isPlaying(sound)) {
+      this.stopSound(sound);
+    }
+  }
+};
 SoundManager.prototype.setSpeed = function(player) {
-  if (this.isPlaying("main")) {
-    this.sounds["main"].stop();
-  }
-  if (this.isPlaying("fast")) {
-    this.sounds["fast"].stop();
-  }
-  if (this.isPlaying("slow")) {
-    this.sounds["slow"].stop();
-  }
+  this.stopAll();
 
   if (player.speed === globalSettings.player_base_speed) {
     this.loopSound("main");
@@ -278,9 +280,11 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.speed *= -1;
         var n = this.name;
+        soundManager.reverse(player);
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= -1;
+          soundManager.reverse(player);
           player.removeEffect(n);
         }, sec * 1000);
       }
@@ -331,29 +335,7 @@ var effects = [
         }, sec * 1000);
       }
     }
-  } /*,
-  {
-    name: "inverse colors",
-    effect: function(player, sec) {
-      if (!player.hasEffect(this.name)) {
-        globalSettings.invertColors = true;
-        setTimeout(function() {
-          globalSettings.invertColors = false;
-        }, sec * 1000);
-      }
-    }
-  } ,
-  {
-    name: "blackout",
-    effect: function(player, sec) {
-      if (!globalSettings.drawBlack) {
-        globalSettings.drawBlack = true;
-        setTimeout(function() {
-          globalSettings.drawBlack = false;
-        }, 1000);
-      }
-    }
-  }*/
+  }
 ];
 
 function Powerup() {
@@ -758,7 +740,7 @@ function windowResized() {
 
 Game.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
-    if (wasButtonClicked(this.buttons[i], mX, mY)) {
+    if (wasButtonClicked(this.buttons[i], mX, mY) && this.gameOver) {
       this.buttons[i].click();
     }
   }
@@ -1042,4 +1024,6 @@ function preload() {
   soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
   soundManager.addSound("grom", "assets/sounds/grommel.mp3");
   soundManager.addSound("schurk", "assets/sounds/schurk.mp3");
+  soundManager.addSound("reverse", "assets/sounds/Main_reverse.mp3");
+  soundManager.addSound("double", "assets/sounds/Double_points.mp3");
 }

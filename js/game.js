@@ -126,7 +126,7 @@ function windowResized() {
 
 Game.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
-    if (wasButtonClicked(this.buttons[i], mX, mY)) {
+    if (wasButtonClicked(this.buttons[i], mX, mY) && this.gameOver) {
       this.buttons[i].click();
     }
   }

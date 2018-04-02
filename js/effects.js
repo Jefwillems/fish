@@ -5,9 +5,11 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.speed *= -1;
         var n = this.name;
+        soundManager.reverse(player);
         player.effectText.push(n);
         setTimeout(function() {
           player.speed *= -1;
+          soundManager.reverse(player);
           player.removeEffect(n);
         }, sec * 1000);
       }
@@ -58,27 +60,5 @@ var effects = [
         }, sec * 1000);
       }
     }
-  } /*,
-  {
-    name: "inverse colors",
-    effect: function(player, sec) {
-      if (!player.hasEffect(this.name)) {
-        globalSettings.invertColors = true;
-        setTimeout(function() {
-          globalSettings.invertColors = false;
-        }, sec * 1000);
-      }
-    }
-  } ,
-  {
-    name: "blackout",
-    effect: function(player, sec) {
-      if (!globalSettings.drawBlack) {
-        globalSettings.drawBlack = true;
-        setTimeout(function() {
-          globalSettings.drawBlack = false;
-        }, 1000);
-      }
-    }
-  }*/
+  }
 ];

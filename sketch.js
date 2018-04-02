@@ -50,4 +50,6 @@ function preload() {
   soundManager.addSound("slow", "assets/sounds/main_slow.mp3");
   soundManager.addSound("grom", "assets/sounds/grommel.mp3");
   soundManager.addSound("schurk", "assets/sounds/schurk.mp3");
+  soundManager.addSound("reverse", "assets/sounds/Main_reverse.mp3");
+  soundManager.addSound("double", "assets/sounds/Double_points.mp3");
 }

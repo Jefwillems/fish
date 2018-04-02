@@ -19,28 +19,30 @@ SoundManager.prototype.addSound = function(name, path) {
 SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
+SoundManager.prototype.reverse = function(player) {
+  this.stopAll();
+  if (this.isPlaying("reverse")) {
+    this.setSpeed(player);
+  } else {
+    this.loopSound("reverse");
+  }
+};
 SoundManager.prototype.gameOver = function() {
+  this.stopAll();
   if (!this.isPlaying("main")) {
     this.loopSound("main");
   }
-  if (this.isPlaying("fast")) {
-    this.sounds["fast"].stop();
-  }
-  if (this.isPlaying("slow")) {
-    this.sounds["slow"].stop();
-  }
   this.playSound("schurk");
 };
+SoundManager.prototype.stopAll = function() {
+  for (sound in this.sounds) {
+    if (this.isPlaying(sound)) {
+      this.stopSound(sound);
+    }
+  }
+};
 SoundManager.prototype.setSpeed = function(player) {
-  if (this.isPlaying("main")) {
-    this.sounds["main"].stop();
-  }
-  if (this.isPlaying("fast")) {
-    this.sounds["fast"].stop();
-  }
-  if (this.isPlaying("slow")) {
-    this.sounds["slow"].stop();
-  }
+  this.stopAll();
 
   if (player.speed === globalSettings.player_base_speed) {
     this.loopSound("main");
