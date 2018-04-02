@@ -50,7 +50,7 @@ Game.prototype.draw = function() {
           this.handleSpawns();
         } else {
           this.gameOver = true;
-          soundManager.playSound("schurk");
+          soundManager.gameOver();
         }
       }
     }
@@ -58,7 +58,7 @@ Game.prototype.draw = function() {
       enemy.draw();
       if (this.player.canEat(enemy)) {
         this.gameOver = true;
-        soundManager.playSound("schurk");
+        soundManager.gameOver();
       }
     }
     for (var i = 0; i < this.powerups.length; i++) {

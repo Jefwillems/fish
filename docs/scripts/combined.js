@@ -73,6 +73,18 @@ SoundManager.prototype.addSound = function(name, path) {
 SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
+SoundManager.prototype.gameOver = function() {
+  if (this.isPlaying("main")) {
+    this.sounds["main"].stop();
+  }
+  if (this.isPlaying("fast")) {
+    this.sounds["fast"].stop();
+  }
+  if (this.isPlaying("slow")) {
+    this.sounds["slow"].stop();
+  }
+  this.playSound("schurk");
+};
 SoundManager.prototype.setSpeed = function(player) {
   if (this.isPlaying("main")) {
     this.sounds["main"].stop();
@@ -667,7 +679,7 @@ Game.prototype.draw = function() {
           this.handleSpawns();
         } else {
           this.gameOver = true;
-          soundManager.playSound("schurk");
+          soundManager.gameOver();
         }
       }
     }
@@ -675,7 +687,7 @@ Game.prototype.draw = function() {
       enemy.draw();
       if (this.player.canEat(enemy)) {
         this.gameOver = true;
-        soundManager.playSound("schurk");
+        soundManager.gameOver();
       }
     }
     for (var i = 0; i < this.powerups.length; i++) {

@@ -17,6 +17,18 @@ SoundManager.prototype.addSound = function(name, path) {
 SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
+SoundManager.prototype.gameOver = function() {
+  if (this.isPlaying("main")) {
+    this.sounds["main"].stop();
+  }
+  if (this.isPlaying("fast")) {
+    this.sounds["fast"].stop();
+  }
+  if (this.isPlaying("slow")) {
+    this.sounds["slow"].stop();
+  }
+  this.playSound("schurk");
+};
 SoundManager.prototype.setSpeed = function(player) {
   if (this.isPlaying("main")) {
     this.sounds["main"].stop();
