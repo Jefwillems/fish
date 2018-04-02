@@ -22,7 +22,7 @@ function Game(gameState) {
   var t = "Main menu";
   var tW = textWidth(t);
   var bW = tW + 45;
-  this.restartBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 75, bW, 50);
+  this.restartBtn = new MenuButton(width / 2 - bW / 2, height / 2, bW, 50);
   this.restartBtn.setText(t);
   this.restartBtn.setClickHandler(() => {
     this.gameState.setState(new Menu(this.gameState));
@@ -32,12 +32,26 @@ function Game(gameState) {
   t = "Export Score";
   tW = textWidth(t);
   this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
-  this.exportBtn.setText("export score");
+  this.exportBtn.setText(t);
   this.exportBtn.setClickHandler(() => {
     //save("score.jpg");
     this.gameState.setState(new ExportState(this.gameState, this.player.score));
   });
   this.buttons.push(this.exportBtn);
+
+  t = "Play again";
+  tW = textWidth(t);
+  this.playAgainBtn = new MenuButton(
+    width / 2 - bW / 2,
+    height / 2 + 75,
+    bW,
+    50
+  );
+  this.playAgainBtn.setText(t);
+  this.playAgainBtn.setClickHandler(() => {
+    this.gameState.setState(new Game(this.gameState));
+  });
+  this.buttons.push(this.playAgainBtn);
 }
 
 Game.prototype.draw = function() {
@@ -75,8 +89,9 @@ Game.prototype.draw = function() {
     textAlign(CENTER, CENTER);
     var t = "Game Over!\nScore: " + this.player.score;
     var tW = textWidth(t);
-    text(t, width / 2, height / 2);
+    text(t, width / 2, height / 2 - 75);
     this.restartBtn.draw();
+    this.playAgainBtn.draw();
     this.exportBtn.draw();
     pop();
   }
