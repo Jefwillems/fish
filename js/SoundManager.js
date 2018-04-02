@@ -18,8 +18,8 @@ SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
 SoundManager.prototype.gameOver = function() {
-  if (this.isPlaying("main")) {
-    this.sounds["main"].stop();
+  if (!this.isPlaying("main")) {
+    this.loopSound("main");
   }
   if (this.isPlaying("fast")) {
     this.sounds["fast"].stop();
