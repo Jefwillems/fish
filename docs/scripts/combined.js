@@ -621,7 +621,7 @@ function Game(gameState) {
   this.powerups = [];
   this.enemies = [];
   this.initSound();
-
+  globalSettings.gameOver = false;
   this.layer;
   this.MAX_POWERUP_CHANCE;
   this.buttons = [];
