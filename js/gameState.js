@@ -19,8 +19,10 @@ GameState.prototype.draw = function() {
   pop();
 };
 
-GameState.prototype.setState = function(s) {
-  this.state.destroy();
+GameState.prototype.setState = function(s, dont_destroy) {
+  if (!dont_destroy) {
+    this.state.destroy();
+  }
   this.state = s;
 };
 

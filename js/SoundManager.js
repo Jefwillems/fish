@@ -6,7 +6,9 @@ SoundManager.prototype.playSound = function(name) {
   this.sounds[name].play();
 };
 SoundManager.prototype.loopSound = function(name) {
-  this.sounds[name].loop();
+  if (!this.isPlaying(name)) {
+    this.sounds[name].loop();
+  }
 };
 SoundManager.prototype.stopSound = function(name) {
   this.sounds[name].stop();

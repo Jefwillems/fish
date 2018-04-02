@@ -49,9 +49,10 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  soundOn: false,
+  soundOn: true,
   postUrl: "/api/score/",
-  player_base_speed: 3
+  player_base_speed: 3,
+  fish_images: []
 };
 
 function SoundManager() {
@@ -62,7 +63,9 @@ SoundManager.prototype.playSound = function(name) {
   this.sounds[name].play();
 };
 SoundManager.prototype.loopSound = function(name) {
-  this.sounds[name].loop();
+  if (!this.isPlaying(name)) {
+    this.sounds[name].loop();
+  }
 };
 SoundManager.prototype.stopSound = function(name) {
   this.sounds[name].stop();
@@ -678,7 +681,7 @@ function Game(gameState) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState));
+    this.gameState.setState(new Game(this.gameState), true);
   });
   this.buttons.push(this.playAgainBtn);
 }
@@ -955,8 +958,10 @@ GameState.prototype.draw = function() {
   pop();
 };
 
-GameState.prototype.setState = function(s) {
-  this.state.destroy();
+GameState.prototype.setState = function(s, dont_destroy) {
+  if (!dont_destroy) {
+    this.state.destroy();
+  }
   this.state = s;
 };
 
@@ -1020,11 +1025,14 @@ function keyPressed() {
 
 function preload() {
   // load images
-  globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
   globalSettings.powerup = loadImage("assets/img/powerup.png");
+
+  var jeanPierre = loadImage("assets/img/jp.png");
+  globalSettings.jeanPierre = jeanPierre;
+  globalSettings.fish_images.push(jeanPierre);
 
   // load sounds
   soundFormats("wav");

@@ -5,7 +5,8 @@ var globalSettings = {
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  soundOn: false,
+  soundOn: true,
   postUrl: "/api/score/",
-  player_base_speed: 3
+  player_base_speed: 3,
+  fish_images: []
 };

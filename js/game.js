@@ -49,7 +49,7 @@ function Game(gameState) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState));
+    this.gameState.setState(new Game(this.gameState), true);
   });
   this.buttons.push(this.playAgainBtn);
 }

@@ -33,11 +33,14 @@ function keyPressed() {
 
 function preload() {
   // load images
-  globalSettings.jeanPierre = loadImage("assets/img/jp.png");
   globalSettings.playerImg = loadImage("assets/img/Vector-Vis.png");
   globalSettings.soundOffImg = loadImage("assets/img/sound_off.png");
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
   globalSettings.powerup = loadImage("assets/img/powerup.png");
+
+  var jeanPierre = loadImage("assets/img/jp.png");
+  globalSettings.jeanPierre = jeanPierre;
+  globalSettings.fish_images.push(jeanPierre);
 
   // load sounds
   soundFormats("wav");
