@@ -8,5 +8,6 @@ var globalSettings = {
   soundOn: true,
   postUrl: "/api/score/",
   player_base_speed: 3,
-  fish_images: []
+  fish_images: [],
+  gameOver: false
 };

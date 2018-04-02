@@ -20,11 +20,14 @@ SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
 SoundManager.prototype.reverse = function(player) {
-  this.stopAll();
   if (this.isPlaying("reverse")) {
+    this.stopAll();
     this.setSpeed(player);
   } else {
-    this.loopSound("reverse");
+    if (!globalSettings.gameOver) {
+      this.stopAll();
+      this.loopSound("reverse");
+    }
   }
 };
 SoundManager.prototype.gameOver = function() {

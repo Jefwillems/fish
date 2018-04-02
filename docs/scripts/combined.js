@@ -52,7 +52,8 @@ var globalSettings = {
   soundOn: true,
   postUrl: "/api/score/",
   player_base_speed: 3,
-  fish_images: []
+  fish_images: [],
+  gameOver: false
 };
 
 function SoundManager() {
@@ -77,11 +78,14 @@ SoundManager.prototype.isPlaying = function(name) {
   return this.sounds[name].isPlaying();
 };
 SoundManager.prototype.reverse = function(player) {
-  this.stopAll();
   if (this.isPlaying("reverse")) {
+    this.stopAll();
     this.setSpeed(player);
   } else {
-    this.loopSound("reverse");
+    if (!globalSettings.gameOver) {
+      this.stopAll();
+      this.loopSound("reverse");
+    }
   }
 };
 SoundManager.prototype.gameOver = function() {
@@ -620,7 +624,6 @@ function Game(gameState) {
 
   this.layer;
   this.MAX_POWERUP_CHANCE;
-  this.gameOver = false;
   this.buttons = [];
   this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
@@ -669,7 +672,7 @@ function Game(gameState) {
 }
 
 Game.prototype.draw = function() {
-  if (!this.gameOver) {
+  if (!globalSettings.gameOver) {
     for (var fish of this.fishes) {
       fish.draw();
       if (this.player.canEat(fish)) {
@@ -677,7 +680,7 @@ Game.prototype.draw = function() {
           this.player.eat(fish);
           this.handleSpawns();
         } else {
-          this.gameOver = true;
+          globalSettings.gameOver = true;
           soundManager.gameOver();
         }
       }
@@ -685,7 +688,7 @@ Game.prototype.draw = function() {
     for (var enemy of this.enemies) {
       enemy.draw();
       if (this.player.canEat(enemy)) {
-        this.gameOver = true;
+        globalSettings.gameOver = true;
         soundManager.gameOver();
       }
     }
@@ -740,7 +743,7 @@ function windowResized() {
 
 Game.prototype.mouseClicked = function(mX, mY) {
   for (var i = 0; i < this.buttons.length; i++) {
-    if (wasButtonClicked(this.buttons[i], mX, mY) && this.gameOver) {
+    if (wasButtonClicked(this.buttons[i], mX, mY) && globalSettings.gameOver) {
       this.buttons[i].click();
     }
   }
