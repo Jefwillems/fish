@@ -100,7 +100,7 @@ Game.prototype.maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
   }
   var r = random();
   if (r < chance) {
-    this.powerups.push(new Powerup());
+    this.powerups.push(new Powerup(this.player));
   }
 };
 

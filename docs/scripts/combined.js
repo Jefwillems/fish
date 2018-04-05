@@ -287,13 +287,13 @@ var effects = [
   }
 ];
 
-function Powerup() {
+function Powerup(player) {
   this.size = 25;
 
   this.img = globalSettings.powerup;
 
-  this.x = random() * width;
-  this.y = random() * height;
+  this.x = player.cX + (width / 2 * random() + 50);
+  this.y = player.cY + (height / 2 * random() + 50);
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
@@ -675,7 +675,7 @@ Game.prototype.maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
   }
   var r = random();
   if (r < chance) {
-    this.powerups.push(new Powerup());
+    this.powerups.push(new Powerup(this.player));
   }
 };
 
