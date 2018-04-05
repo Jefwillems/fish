@@ -302,8 +302,9 @@ Powerup.prototype.draw = function() {
   push();
   fill("red");
   //ellipse(this.x, this.y, this.size, this.size);
+  imageMode(CENTER);
   image(this.img, this.x, this.y, this.size * 2.23, this.size);
-  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size * 2.3, this.size);
   pop();
 };
 
@@ -778,7 +779,9 @@ UsernameState.prototype.draw = function() {
   }
 };
 UsernameState.prototype.initSound = function() {};
-UsernameState.prototype.destroy = function() {};
+UsernameState.prototype.destroy = function() {
+  if (soundManager.isPlaying("intro")) soundManager.stopSound("intro");
+};
 
 UsernameState.prototype.keyPressed = function(btn) {
   this.editText.keyPressed(btn);
@@ -905,6 +908,7 @@ function Menu(gameState) {
   playButton.setClickHandler(() => {
     var usrn = localStorage.getItem("username");
     if (usrn && usrn.length != 0) {
+      if (soundManager.isPlaying("intro")) soundManager.stopSound("intro");
       this.gameState.setState(new Game(this.gameState, new Player(usrn)));
     } else {
       this.gameState.setState(new UsernameState(this.gameState));
@@ -912,11 +916,8 @@ function Menu(gameState) {
   });
   this.buttons.push(playButton);
 
-  //about button
-  var aboutW = w / 2 - 25;
-  var aboutY = y + h + 25;
-
-  var aboutButton = new MenuButton(x, aboutY, aboutW, h);
+  // highscores button
+  var aboutButton = new MenuButton(x, y + 75, w, h);
   aboutButton.setText("Highscores");
   aboutButton.setClickHandler(() => {
     var win = window.open(globalSettings.aboutUrl, "_blank");
@@ -925,8 +926,7 @@ function Menu(gameState) {
   this.buttons.push(aboutButton);
 
   // info button
-  var infoX = x + w - aboutW;
-  var infoBtn = new MenuButton(infoX, aboutY, aboutW, h);
+  var infoBtn = new MenuButton(x, y + 150, w, h);
   infoBtn.setText("Info");
   infoBtn.setClickHandler(() => {
     gameState.setState(new Info(this.gameState));
@@ -952,9 +952,7 @@ Menu.prototype.initSound = function() {
   soundManager.loopSound("intro");
 };
 
-Menu.prototype.destroy = function() {
-  soundManager.stopSound("intro");
-};
+Menu.prototype.destroy = function() {};
 
 var wasButtonClicked = function(button, mX, mY) {
   return collidePointRect(mX, mY, button.x, button.y, button.w, button.h);
@@ -986,10 +984,8 @@ GameState.prototype.draw = function() {
   pop();
 };
 
-GameState.prototype.setState = function(s, dont_destroy) {
-  if (!dont_destroy) {
-    this.state.destroy();
-  }
+GameState.prototype.setState = function(s) {
+  this.state.destroy();
   this.state = s;
 };
 
