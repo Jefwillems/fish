@@ -38,9 +38,11 @@ function preload() {
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
   globalSettings.powerup = loadImage("assets/img/powerup.png");
 
-  var jeanPierre = loadImage("assets/img/jp.png");
-  globalSettings.jeanPierre = jeanPierre;
-  globalSettings.fish_images.push(jeanPierre);
+  globalSettings.fish_images.push(loadImage("assets/img/jp.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Alain.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/kurkdroog.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Maggie.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Hawking.png"));
 
   // load sounds
   soundFormats("wav");

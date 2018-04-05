@@ -1,5 +1,5 @@
 var jpMargin = 12;
-function Fish() {
+function Fish(imgIndex) {
   this.size = random() * 50 + 1;
   var left = random() < 0.5;
   if (left) {
@@ -8,7 +8,8 @@ function Fish() {
     this.x = width - random() * 300;
   }
   this.y = random() * height;
-  this.img = globalSettings.jeanPierre;
+  this.currentIndex = imgIndex;
+  this.img = globalSettings.fish_images[this.currentIndex];
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
@@ -16,8 +17,9 @@ Fish.prototype.draw = function() {
   this.update();
   push();
   imageMode(CENTER);
-  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
   if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
+  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+
   pop();
 };
 
@@ -39,9 +41,17 @@ Fish.prototype.update = function() {
   }
 };
 
-Fish.prototype.reset = function(playerSize) {
-  this.size = playerSize + random() * 8 - 4;
-  this.x = random() * width;
-  this.y = random() * height;
+Fish.prototype.reset = function(player) {
+  this.size = player.size + random() * 8 - 4;
+  this.x = player.cX + (width / 2 * random() + 50);
+  this.y = player.cY + (height / 2 * random() + 50);
   this.direction = [random() * 2 - 1, random() * 2 - 1];
+};
+
+Fish.prototype.nextImg = function() {
+  this.currentIndex++;
+  if (this.currentIndex >= globalSettings.fish_images.length) {
+    this.currentIndex = 0;
+  }
+  this.img = globalSettings.fish_images[this.currentIndex];
 };

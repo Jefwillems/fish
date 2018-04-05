@@ -2,7 +2,12 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
-  if (!globalSettings.soundOn) {
+  var soundOn =
+    localStorage.getItem("soundOn") === "true" ||
+    localStorage.getItem("soundOn") === null;
+
+  globalSettings.soundOn = soundOn;
+  if (!soundOn) {
     masterVolume(0.0);
   }
 }
@@ -31,8 +36,10 @@ GameState.prototype.mouseClicked = function(mX, mY) {
     globalSettings.soundOn = !globalSettings.soundOn;
     if (globalSettings.soundOn) {
       masterVolume(1.0);
+      localStorage.setItem("soundOn", true);
     } else {
       masterVolume(0.0);
+      localStorage.setItem("soundOn", false);
     }
     return;
   }

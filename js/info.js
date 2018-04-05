@@ -13,20 +13,31 @@ function Info(gameState) {
     this.gameState.setState(new Menu(this.gameState));
   });
   this.buttons.push(backBtn);
-  this.text = new TextUtil("\n")
-    .append("Catch all the Van Rossems smaller than you!")
-    .append("Watch out for the {?enemy name?}")
-    .append("Control your fish with the arrow keys (sorry mobile users 😿)")
-    .build();
+
+  this.text = [
+    "During their mating season, Jean-Pierre Van Rossems tend to become profoundly aggressive.",
+    "Use the arrow keys to navigate Fadry Fish trough",
+    "hordes of libidinous, corpulent, neanderthal-like ashtrays and remember:",
+    "EAT OR BE EATEN!"
+  ];
+
+  // textSize(32);
+  // var twi = textWidth(this.text[0]);
+  // this.tW = width * 0.6;
+  // this.tX = width / 2 - twi / 2;
+  // this.tY = height / 2;
+  // this.tH = height;
 }
 
 Info.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
+  push();
   textSize(32);
   textAlign(CENTER);
-  text(this.text, width / 2, (height - 100) / 2);
+  text(this.text.join("\n"), width / 2, height / 2 - 66);
+  pop();
 };
 
 Info.prototype.destroy = function() {};

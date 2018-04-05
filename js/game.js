@@ -11,7 +11,7 @@ function Game(gameState, player) {
   this.buttons = [];
   this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
-    this.fishes.push(new Fish());
+    this.fishes.push(new Fish(0));
   }
   for (var i = 0; i < random() * 8 + 3; i++) {
     this.enemies.push(new Enemy());
@@ -54,6 +54,9 @@ Game.prototype.draw = function() {
       if (this.player.canEat(fish)) {
         if (this.player.size >= fish.size) {
           this.player.eat(fish);
+          if (this.player.score % 15 === 0) {
+            this.swapFishImages();
+          }
           this.handleSpawns();
         } else {
           this.gameOver();
@@ -152,4 +155,12 @@ Game.prototype.postScore = function() {
       }
     );
   }).then(console.log);
+};
+
+Game.prototype.swapFishImages = function() {
+  new Promise((resolve, reject) => {
+    this.fishes.forEach(f => {
+      f.nextImg();
+    });
+  });
 };

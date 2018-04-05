@@ -26,7 +26,7 @@ function Menu(gameState) {
   var aboutY = y + h + 25;
 
   var aboutButton = new MenuButton(x, aboutY, aboutW, h);
-  aboutButton.setText("About");
+  aboutButton.setText("Highscores");
   aboutButton.setClickHandler(() => {
     var win = window.open(globalSettings.aboutUrl, "_blank");
     win.focus();

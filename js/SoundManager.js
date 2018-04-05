@@ -32,9 +32,7 @@ SoundManager.prototype.reverse = function(player) {
 };
 SoundManager.prototype.gameOver = function() {
   this.stopAll();
-  if (!this.isPlaying("main")) {
-    this.loopSound("main");
-  }
+  this.loopSound("main");
   this.playSound("schurk");
 };
 SoundManager.prototype.stopAll = function() {
@@ -42,6 +40,15 @@ SoundManager.prototype.stopAll = function() {
     if (this.isPlaying(sound)) {
       this.stopSound(sound);
     }
+  }
+};
+SoundManager.prototype.doublePoints = function() {
+  if (this.isPlaying("double")) {
+    this.stopAll();
+    this.loopSound("main");
+  } else {
+    this.stopAll();
+    this.loopSound("double");
   }
 };
 SoundManager.prototype.setSpeed = function(player) {

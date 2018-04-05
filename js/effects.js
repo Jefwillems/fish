@@ -53,10 +53,12 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.pointsMultiplier = 2;
         var n = this.name;
+        soundManager.doublePoints();
         player.effectText.push(n);
         setTimeout(function() {
           player.pointsMultiplier = 1;
           player.removeEffect(n);
+          soundManager.doublePoints();
         }, sec * 1000);
       }
     }

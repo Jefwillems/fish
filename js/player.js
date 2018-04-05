@@ -101,7 +101,7 @@ Player.prototype.eat = function(fish) {
   if (random() > 0.5) {
     soundManager.playSound("grom");
   }
-  fish.reset(this.size);
+  fish.reset(this);
   this.addScore();
 };
 

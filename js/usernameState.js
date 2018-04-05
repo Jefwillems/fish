@@ -25,6 +25,13 @@ function UsernameState(gamestate) {
 }
 
 UsernameState.prototype.draw = function() {
+  push();
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  var x = width / 2;
+  var y = height / 2 - 50;
+  text("Please enter your username", x, y);
+  pop();
   for (var i = 0; i < this.elements.length; i++) {
     this.elements[i].draw();
   }
