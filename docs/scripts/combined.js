@@ -580,7 +580,6 @@ function Game(gameState, player) {
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
-  this.initSound();
   globalSettings.gameOver = false;
   this.MAX_POWERUP_CHANCE = 0.2;
   this.buttons = [];
@@ -614,10 +613,7 @@ function Game(gameState, player) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(
-      new Game(this.gameState, new Player(this.name)),
-      true
-    );
+    this.gameState.setState(new Game(this.gameState, new Player(this.name)));
   });
   this.buttons.push(this.playAgainBtn);
 }
@@ -897,7 +893,6 @@ MenuButton.prototype.click = function() {
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
-  this.initSound();
 
   //play button
   var w = width * 0.3;
@@ -964,6 +959,7 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
+  this.state.initSound();
   var soundOn =
     localStorage.getItem("soundOn") === "true" ||
     localStorage.getItem("soundOn") === null;
@@ -989,6 +985,7 @@ GameState.prototype.draw = function() {
 GameState.prototype.setState = function(s) {
   this.state.destroy();
   this.state = s;
+  this.state.initSound();
 };
 
 GameState.prototype.mouseClicked = function(mX, mY) {

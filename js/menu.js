@@ -1,7 +1,6 @@
 function Menu(gameState) {
   this.gameState = gameState;
   this.buttons = [];
-  this.initSound();
 
   //play button
   var w = width * 0.3;

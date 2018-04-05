@@ -5,7 +5,6 @@ function Game(gameState, player) {
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
-  this.initSound();
   globalSettings.gameOver = false;
   this.MAX_POWERUP_CHANCE = 0.2;
   this.buttons = [];
@@ -39,10 +38,7 @@ function Game(gameState, player) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(
-      new Game(this.gameState, new Player(this.name)),
-      true
-    );
+    this.gameState.setState(new Game(this.gameState, new Player(this.name)));
   });
   this.buttons.push(this.playAgainBtn);
 }

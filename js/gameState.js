@@ -2,6 +2,7 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
+  this.state.initSound();
   var soundOn =
     localStorage.getItem("soundOn") === "true" ||
     localStorage.getItem("soundOn") === null;
@@ -27,6 +28,7 @@ GameState.prototype.draw = function() {
 GameState.prototype.setState = function(s) {
   this.state.destroy();
   this.state = s;
+  this.state.initSound();
 };
 
 GameState.prototype.mouseClicked = function(mX, mY) {
