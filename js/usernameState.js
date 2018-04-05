@@ -37,7 +37,9 @@ UsernameState.prototype.draw = function() {
   }
 };
 UsernameState.prototype.initSound = function() {};
-UsernameState.prototype.destroy = function() {};
+UsernameState.prototype.destroy = function() {
+  if (soundManager.isPlaying("intro")) soundManager.stopSound("intro");
+};
 
 UsernameState.prototype.keyPressed = function(btn) {
   this.editText.keyPressed(btn);
