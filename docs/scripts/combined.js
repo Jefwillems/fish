@@ -734,9 +734,11 @@ Game.prototype.postScore = function() {
 
 Game.prototype.swapFishImages = function() {
   new Promise((resolve, reject) => {
-    this.fishes.forEach(f => {
-      f.nextImg();
-    });
+    for (let i = 0; i < this.fishes.length; i++) {
+      setTimeout(() => {
+        this.fishes[i].nextImg();
+      }, i * 20);
+    }
   });
 };
 
