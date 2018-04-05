@@ -13,8 +13,9 @@ Powerup.prototype.draw = function() {
   push();
   fill("red");
   //ellipse(this.x, this.y, this.size, this.size);
+  imageMode(CENTER);
   image(this.img, this.x, this.y, this.size * 2.23, this.size);
-  if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
+  if (globalSettings.debug) ellipse(this.x, this.y, this.size * 2.3, this.size);
   pop();
 };
 
