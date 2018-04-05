@@ -45,11 +45,11 @@ console.log("### p5.collide ###"),p5.prototype._collideDebug=!1,p5.prototype.col
 var globalSettings = {
   invertColors: false,
   drawBlack: false,
-  aboutUrl: "https://github.com/Jefwillems/fish",
+  aboutUrl: "/highscore/",
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
-  soundOn: true,
+  soundOn: false,
   postUrl: "/api/score/",
   player_base_speed: 3,
   fish_images: [],
@@ -90,9 +90,7 @@ SoundManager.prototype.reverse = function(player) {
 };
 SoundManager.prototype.gameOver = function() {
   this.stopAll();
-  if (!this.isPlaying("main")) {
-    this.loopSound("main");
-  }
+  this.loopSound("main");
   this.playSound("schurk");
 };
 SoundManager.prototype.stopAll = function() {
@@ -100,6 +98,15 @@ SoundManager.prototype.stopAll = function() {
     if (this.isPlaying(sound)) {
       this.stopSound(sound);
     }
+  }
+};
+SoundManager.prototype.doublePoints = function() {
+  if (this.isPlaying("double")) {
+    this.stopAll();
+    this.loopSound("main");
+  } else {
+    this.stopAll();
+    this.loopSound("double");
   }
 };
 SoundManager.prototype.setSpeed = function(player) {
@@ -116,70 +123,6 @@ SoundManager.prototype.setSpeed = function(player) {
   }
 };
 var soundManager = new SoundManager();
-
-function ExportState(gameState, score) {
-  this.gameState = gameState;
-  this.score = score;
-  this.buttons = [];
-
-  var w = width / 2;
-  var h = 50;
-  var x = width / 2 - w / 2;
-  var y = height / 2;
-  this.editText = new TextField(x, y, w, h);
-
-  y += 75;
-  this.postButton = new MenuButton(x, y, w, h);
-  this.postButton.setText("post score");
-  this.postButton.setClickHandler(() => {
-    console.log("posting score to server");
-    var username = this.editText;
-    var score = this.score;
-    var postData = {
-      username: username.text,
-      score: score
-    };
-    httpPost(
-      globalSettings.postUrl,
-      "json",
-      postData,
-      function(data) {
-        console.log(data);
-        gameState.setState(new Menu(gameState));
-      },
-      function(error) {
-        console.error(error);
-      }
-    );
-  });
-
-  this.buttons.push(this.postButton);
-  this.buttons.push(this.editText);
-}
-
-ExportState.prototype.draw = function() {
-  for (var i = 0; i < this.buttons.length; i++) {
-    this.buttons[i].draw();
-  }
-};
-
-ExportState.prototype.mouseClicked = function(mX, mY) {
-  if (wasButtonClicked(this.postButton, mX, mY)) {
-    this.postButton.click();
-  }
-};
-
-ExportState.prototype.initSound = function() {};
-
-ExportState.prototype.destroy = function() {};
-
-ExportState.prototype.keyPressed = function(btn) {
-  this.editText.keyPressed(btn);
-};
-
-ExportState.prototype.keyTyped = function(character) {
-  this.editText.keyTyped(character);
-};
 
 function TextField(x, y, w, h) {
   this.x = x;
@@ -332,10 +275,12 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.pointsMultiplier = 2;
         var n = this.name;
+        soundManager.doublePoints();
         player.effectText.push(n);
         setTimeout(function() {
           player.pointsMultiplier = 1;
           player.removeEffect(n);
+          soundManager.doublePoints();
         }, sec * 1000);
       }
     }
@@ -386,7 +331,8 @@ Powerup.prototype.getEffect = function(score) {
 };
 
 var POWER_DURATION = 10;
-function Player() {
+function Player(name) {
+  this.name = name;
   this.size = 20;
   this.cX = width / 2 + 30 * (random() * -2 + 1);
   this.cY = height / 2 + 30 * (random() * -2 + 1);
@@ -487,7 +433,7 @@ Player.prototype.eat = function(fish) {
   if (random() > 0.5) {
     soundManager.playSound("grom");
   }
-  fish.reset(this.size);
+  fish.reset(this);
   this.addScore();
 };
 
@@ -524,7 +470,7 @@ Player.prototype.addScore = function() {
 };
 
 var jpMargin = 12;
-function Fish() {
+function Fish(imgIndex) {
   this.size = random() * 50 + 1;
   var left = random() < 0.5;
   if (left) {
@@ -533,7 +479,8 @@ function Fish() {
     this.x = width - random() * 300;
   }
   this.y = random() * height;
-  this.img = globalSettings.jeanPierre;
+  this.currentIndex = imgIndex;
+  this.img = globalSettings.fish_images[this.currentIndex];
   this.direction = [random() * 2 - 1, random() * 2 - 1];
 }
 
@@ -541,8 +488,9 @@ Fish.prototype.draw = function() {
   this.update();
   push();
   imageMode(CENTER);
-  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
   if (globalSettings.debug) ellipse(this.x, this.y, this.size, this.size);
+  image(this.img, this.x, this.y, this.size + jpMargin, this.size + jpMargin);
+
   pop();
 };
 
@@ -564,11 +512,19 @@ Fish.prototype.update = function() {
   }
 };
 
-Fish.prototype.reset = function(playerSize) {
-  this.size = playerSize + random() * 8 - 4;
-  this.x = random() * width;
-  this.y = random() * height;
+Fish.prototype.reset = function(player) {
+  this.size = player.size + random() * 8 - 4;
+  this.x = player.cX + (width / 2 * random() + 50);
+  this.y = player.cY + (height / 2 * random() + 50);
   this.direction = [random() * 2 - 1, random() * 2 - 1];
+};
+
+Fish.prototype.nextImg = function() {
+  this.currentIndex++;
+  if (this.currentIndex >= globalSettings.fish_images.length) {
+    this.currentIndex = 0;
+  }
+  this.img = globalSettings.fish_images[this.currentIndex];
 };
 
 function Enemy() {
@@ -616,24 +572,25 @@ Enemy.prototype.draw = function() {
   pop();
 };
 
-function Game(gameState) {
+function Game(gameState, player) {
+  if (!player) {
+    gameState.setState(new UsernameState(gameState));
+  }
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
   this.initSound();
   globalSettings.gameOver = false;
-  this.layer;
-  this.MAX_POWERUP_CHANCE;
+  this.MAX_POWERUP_CHANCE = 0.2;
   this.buttons = [];
   this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
-    this.fishes.push(new Fish());
+    this.fishes.push(new Fish(0));
   }
   for (var i = 0; i < random() * 8 + 3; i++) {
     this.enemies.push(new Enemy());
   }
-  this.player = new Player();
-  this.MAX_POWERUP_CHANCE = 0.2;
+  this.player = player;
 
   textSize(40);
   var t = "Main menu";
@@ -646,16 +603,6 @@ function Game(gameState) {
   });
   this.buttons.push(this.restartBtn);
 
-  t = "Export Score";
-  tW = textWidth(t);
-  this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
-  this.exportBtn.setText(t);
-  this.exportBtn.setClickHandler(() => {
-    //save("score.jpg");
-    this.gameState.setState(new ExportState(this.gameState, this.player.score));
-  });
-  this.buttons.push(this.exportBtn);
-
   t = "Play again";
   tW = textWidth(t);
   this.playAgainBtn = new MenuButton(
@@ -666,7 +613,10 @@ function Game(gameState) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState), true);
+    this.gameState.setState(
+      new Game(this.gameState, new Player(this.name)),
+      true
+    );
   });
   this.buttons.push(this.playAgainBtn);
 }
@@ -678,18 +628,19 @@ Game.prototype.draw = function() {
       if (this.player.canEat(fish)) {
         if (this.player.size >= fish.size) {
           this.player.eat(fish);
+          if (this.player.score % 15 === 0) {
+            this.swapFishImages();
+          }
           this.handleSpawns();
         } else {
-          globalSettings.gameOver = true;
-          soundManager.gameOver();
+          this.gameOver();
         }
       }
     }
     for (var enemy of this.enemies) {
       enemy.draw();
       if (this.player.canEat(enemy)) {
-        globalSettings.gameOver = true;
-        soundManager.gameOver();
+        this.gameOver();
       }
     }
     for (var i = 0; i < this.powerups.length; i++) {
@@ -709,7 +660,6 @@ Game.prototype.draw = function() {
     text(t, width / 2, height / 2 - 75);
     this.restartBtn.draw();
     this.playAgainBtn.draw();
-    this.exportBtn.draw();
     pop();
   }
 };
@@ -748,6 +698,10 @@ Game.prototype.mouseClicked = function(mX, mY) {
     }
   }
 };
+Game.prototype.gameOver = function() {
+  globalSettings.gameOver = true;
+  soundManager.gameOver();
+};
 
 Game.prototype.initSound = function() {
   soundManager.loopSound("main");
@@ -757,18 +711,86 @@ Game.prototype.destroy = function() {
   soundManager.stopSound("main");
 };
 
-function TextUtil(delimiter, text = "") {
-  this.delimiter = delimiter;
-  this.text = text;
-}
-
-TextUtil.prototype.append = function(text) {
-  this.text += text + this.delimiter;
-  return this;
+Game.prototype.postScore = function() {
+  return new Promise((resolve, reject) => {
+    var username = this.editText;
+    var score = this.score;
+    var postData = { username: username.text, score: score };
+    httpPost(
+      globalSettings.postUrl,
+      "json",
+      postData,
+      function(data) {
+        console.log(data);
+        gameState.setState(new Menu(gameState));
+      },
+      function(error) {
+        console.error(error);
+      }
+    );
+  }).then(console.log);
 };
 
-TextUtil.prototype.build = function() {
-  return this.text;
+Game.prototype.swapFishImages = function() {
+  new Promise((resolve, reject) => {
+    this.fishes.forEach(f => {
+      f.nextImg();
+    });
+  });
+};
+
+function UsernameState(gamestate) {
+  this.gamestate = gamestate;
+
+  this.elements = [];
+
+  var w = width / 2;
+  var h = 50;
+  var x = width / 2 - w / 2;
+  var y = height / 2;
+  this.editText = new TextField(x, y, w, h);
+
+  this.elements.push(this.editText);
+
+  y += 75;
+  this.playBtn = new MenuButton(x, y, w, h);
+  this.playBtn.setText("Play Game");
+  this.playBtn.setClickHandler(() => {
+    localStorage.setItem("username", this.editText.text);
+    this.gamestate.setState(
+      new Game(this.gamestate, new Player(this.editText.text))
+    );
+  });
+
+  this.elements.push(this.playBtn);
+}
+
+UsernameState.prototype.draw = function() {
+  push();
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  var x = width / 2;
+  var y = height / 2 - 50;
+  text("Please enter your username", x, y);
+  pop();
+  for (var i = 0; i < this.elements.length; i++) {
+    this.elements[i].draw();
+  }
+};
+UsernameState.prototype.initSound = function() {};
+UsernameState.prototype.destroy = function() {};
+
+UsernameState.prototype.keyPressed = function(btn) {
+  this.editText.keyPressed(btn);
+};
+
+UsernameState.prototype.keyTyped = function(character) {
+  this.editText.keyTyped(character);
+};
+UsernameState.prototype.mouseClicked = function(mX, mY) {
+  if (wasButtonClicked(this.playBtn, mX, mY)) {
+    this.playBtn.click();
+  }
 };
 
 function Info(gameState) {
@@ -786,20 +808,31 @@ function Info(gameState) {
     this.gameState.setState(new Menu(this.gameState));
   });
   this.buttons.push(backBtn);
-  this.text = new TextUtil("\n")
-    .append("Catch all the Van Rossems smaller than you!")
-    .append("Watch out for the {?enemy name?}")
-    .append("Control your fish with the arrow keys (sorry mobile users 😿)")
-    .build();
+
+  this.text = [
+    "During their mating season, Jean-Pierre Van Rossems tend to become profoundly aggressive.",
+    "Use the arrow keys to navigate Fadry Fish trough",
+    "hordes of libidinous, corpulent, neanderthal-like ashtrays and remember:",
+    "EAT OR BE EATEN!"
+  ];
+
+  // textSize(32);
+  // var twi = textWidth(this.text[0]);
+  // this.tW = width * 0.6;
+  // this.tX = width / 2 - twi / 2;
+  // this.tY = height / 2;
+  // this.tH = height;
 }
 
 Info.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
+  push();
   textSize(32);
   textAlign(CENTER);
-  text(this.text, width / 2, (height - 100) / 2);
+  text(this.text.join("\n"), width / 2, height / 2 - 66);
+  pop();
 };
 
 Info.prototype.destroy = function() {};
@@ -870,7 +903,12 @@ function Menu(gameState) {
   var playButton = new MenuButton(x, y, w, h);
   playButton.setText("Play Game");
   playButton.setClickHandler(() => {
-    gameState.setState(new Game(this.gameState));
+    var usrn = localStorage.getItem("username");
+    if (usrn && usrn.length != 0) {
+      this.gameState.setState(new Game(this.gameState, new Player(usrn)));
+    } else {
+      this.gameState.setState(new UsernameState(this.gameState));
+    }
   });
   this.buttons.push(playButton);
 
@@ -879,7 +917,7 @@ function Menu(gameState) {
   var aboutY = y + h + 25;
 
   var aboutButton = new MenuButton(x, aboutY, aboutW, h);
-  aboutButton.setText("About");
+  aboutButton.setText("Highscores");
   aboutButton.setClickHandler(() => {
     var win = window.open(globalSettings.aboutUrl, "_blank");
     win.focus();
@@ -926,7 +964,12 @@ function GameState() {
   this.soundOnImg = globalSettings.soundOnImg;
   this.soundOffImg = globalSettings.soundOffImg;
   this.state = new Menu(this);
-  if (!globalSettings.soundOn) {
+  var soundOn =
+    localStorage.getItem("soundOn") === "true" ||
+    localStorage.getItem("soundOn") === null;
+
+  globalSettings.soundOn = soundOn;
+  if (!soundOn) {
     masterVolume(0.0);
   }
 }
@@ -955,8 +998,10 @@ GameState.prototype.mouseClicked = function(mX, mY) {
     globalSettings.soundOn = !globalSettings.soundOn;
     if (globalSettings.soundOn) {
       masterVolume(1.0);
+      localStorage.setItem("soundOn", true);
     } else {
       masterVolume(0.0);
+      localStorage.setItem("soundOn", false);
     }
     return;
   }
@@ -1015,9 +1060,11 @@ function preload() {
   globalSettings.soundOnImg = loadImage("assets/img/sound_on.png");
   globalSettings.powerup = loadImage("assets/img/powerup.png");
 
-  var jeanPierre = loadImage("assets/img/jp.png");
-  globalSettings.jeanPierre = jeanPierre;
-  globalSettings.fish_images.push(jeanPierre);
+  globalSettings.fish_images.push(loadImage("assets/img/jp.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Alain.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/kurkdroog.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Maggie.png"));
+  globalSettings.fish_images.push(loadImage("assets/img/Hawking.png"));
 
   // load sounds
   soundFormats("wav");
