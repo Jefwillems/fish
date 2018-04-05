@@ -398,7 +398,7 @@ Player.prototype.draw = function() {
     rect(x - this.w() / 2, y - this.h() / 2, this.w(), this.h());
   push();
   textSize(32);
-  var t = "Score: " + this.score + "\n";
+  var t = this.name + "\nScore: " + this.score + "\n";
   if (this.effectText.length !== 0) {
     t += "Effects:\n";
   }
