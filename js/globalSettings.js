@@ -1,7 +1,7 @@
 var globalSettings = {
   invertColors: false,
   drawBlack: false,
-  aboutUrl: "https://github.com/Jefwillems/fish",
+  aboutUrl: "/highscore/",
   enemySpeed: 2,
   enemySize: 50,
   debug: false,
