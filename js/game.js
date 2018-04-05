@@ -1,11 +1,13 @@
-function Game(gameState) {
+function Game(gameState, player) {
+  if (!player) {
+    gameState.setState(new UsernameState(gameState));
+  }
   this.fishes = [];
   this.powerups = [];
   this.enemies = [];
   this.initSound();
   globalSettings.gameOver = false;
-  this.layer;
-  this.MAX_POWERUP_CHANCE;
+  this.MAX_POWERUP_CHANCE = 0.2;
   this.buttons = [];
   this.gameState = gameState;
   for (var i = 0; i < 30; i++) {
@@ -14,8 +16,7 @@ function Game(gameState) {
   for (var i = 0; i < random() * 8 + 3; i++) {
     this.enemies.push(new Enemy());
   }
-  this.player = new Player();
-  this.MAX_POWERUP_CHANCE = 0.2;
+  this.player = player;
 
   textSize(40);
   var t = "Main menu";
@@ -28,16 +29,6 @@ function Game(gameState) {
   });
   this.buttons.push(this.restartBtn);
 
-  t = "Export Score";
-  tW = textWidth(t);
-  this.exportBtn = new MenuButton(width / 2 - bW / 2, height / 2 + 150, bW, 50);
-  this.exportBtn.setText(t);
-  this.exportBtn.setClickHandler(() => {
-    //save("score.jpg");
-    this.gameState.setState(new ExportState(this.gameState, this.player.score));
-  });
-  this.buttons.push(this.exportBtn);
-
   t = "Play again";
   tW = textWidth(t);
   this.playAgainBtn = new MenuButton(
@@ -48,7 +39,10 @@ function Game(gameState) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState), true);
+    this.gameState.setState(
+      new Game(this.gameState, new Player(this.name)),
+      true
+    );
   });
   this.buttons.push(this.playAgainBtn);
 }
@@ -62,16 +56,14 @@ Game.prototype.draw = function() {
           this.player.eat(fish);
           this.handleSpawns();
         } else {
-          globalSettings.gameOver = true;
-          soundManager.gameOver();
+          this.gameOver();
         }
       }
     }
     for (var enemy of this.enemies) {
       enemy.draw();
       if (this.player.canEat(enemy)) {
-        globalSettings.gameOver = true;
-        soundManager.gameOver();
+        this.gameOver();
       }
     }
     for (var i = 0; i < this.powerups.length; i++) {
@@ -91,7 +83,6 @@ Game.prototype.draw = function() {
     text(t, width / 2, height / 2 - 75);
     this.restartBtn.draw();
     this.playAgainBtn.draw();
-    this.exportBtn.draw();
     pop();
   }
 };
@@ -130,6 +121,10 @@ Game.prototype.mouseClicked = function(mX, mY) {
     }
   }
 };
+Game.prototype.gameOver = function() {
+  globalSettings.gameOver = true;
+  soundManager.gameOver();
+};
 
 Game.prototype.initSound = function() {
   soundManager.loopSound("main");
@@ -137,4 +132,24 @@ Game.prototype.initSound = function() {
 
 Game.prototype.destroy = function() {
   soundManager.stopSound("main");
+};
+
+Game.prototype.postScore = function() {
+  return new Promise((resolve, reject) => {
+    var username = this.editText;
+    var score = this.score;
+    var postData = { username: username.text, score: score };
+    httpPost(
+      globalSettings.postUrl,
+      "json",
+      postData,
+      function(data) {
+        console.log(data);
+        gameState.setState(new Menu(gameState));
+      },
+      function(error) {
+        console.error(error);
+      }
+    );
+  }).then(console.log);
 };

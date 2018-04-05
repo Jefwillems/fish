@@ -1,5 +1,6 @@
 var POWER_DURATION = 10;
-function Player() {
+function Player(name) {
+  this.name = name;
   this.size = 20;
   this.cX = width / 2 + 30 * (random() * -2 + 1);
   this.cY = height / 2 + 30 * (random() * -2 + 1);

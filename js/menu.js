@@ -12,7 +12,12 @@ function Menu(gameState) {
   var playButton = new MenuButton(x, y, w, h);
   playButton.setText("Play Game");
   playButton.setClickHandler(() => {
-    gameState.setState(new Game(this.gameState));
+    var usrn = localStorage.getItem("username");
+    if (usrn && usrn.length != 0) {
+      this.gameState.setState(new Game(this.gameState, new Player(usrn)));
+    } else {
+      this.gameState.setState(new UsernameState(this.gameState));
+    }
   });
   this.buttons.push(playButton);
 
