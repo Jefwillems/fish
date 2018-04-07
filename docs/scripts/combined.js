@@ -834,14 +834,9 @@ function Info(gameState) {
     "hordes of libidinous, corpulent, neanderthal-like ashtrays and remember:",
     "EAT OR BE EATEN!"
   ];
-
-  // textSize(32);
-  // var twi = textWidth(this.text[0]);
-  // this.tW = width * 0.6;
-  // this.tX = width / 2 - twi / 2;
-  // this.tY = height / 2;
-  // this.tH = height;
 }
+
+Info.prototype.initSound = function() {};
 
 Info.prototype.draw = function() {
   for (var i = 0; i < this.buttons.length; i++) {
@@ -849,8 +844,10 @@ Info.prototype.draw = function() {
   }
   push();
   textSize(32);
-  textAlign(CENTER);
-  text(this.text.join("\n"), width / 2, height / 2 - 66);
+  var t = this.text.join(" ");
+  textAlign(LEFT, CENTER);
+  var textMargin = width * 0.2;
+  text(t, 0 + textMargin, 0, width - textMargin * 2, height);
   pop();
 };
 
