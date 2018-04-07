@@ -94,6 +94,7 @@ SoundManager.prototype.gameOver = function() {
   this.playSound("schurk");
 };
 SoundManager.prototype.stopAll = function() {
+  clearTimeouts();
   for (sound in this.sounds) {
     if (this.isPlaying(sound)) {
       this.stopSound(sound);
@@ -220,6 +221,13 @@ function Seaweed() {}
 
 Seaweed.prototype.draw = function() {};
 
+var timeouts = [];
+var clearTimeouts = function() {
+  timeouts.forEach(to => {
+    clearTimeout(to);
+  });
+  timeouts = [];
+};
 var effects = [
   {
     name: "reverse",
@@ -229,11 +237,13 @@ var effects = [
         var n = this.name;
         soundManager.reverse(player);
         player.effectText.push(n);
-        setTimeout(function() {
-          player.speed *= -1;
-          soundManager.reverse(player);
-          player.removeEffect(n);
-        }, sec * 1000);
+        timeouts.push(
+          setTimeout(function() {
+            player.speed *= -1;
+            soundManager.reverse(player);
+            player.removeEffect(n);
+          }, sec * 1000)
+        );
       }
     }
   },
@@ -245,11 +255,13 @@ var effects = [
         var n = this.name;
         soundManager.setSpeed(player);
         player.effectText.push(n);
-        setTimeout(function() {
-          player.speed *= 2;
-          player.removeEffect(n);
-          soundManager.setSpeed(player);
-        }, sec * 1000);
+        timeouts.push(
+          setTimeout(function() {
+            player.speed *= 2;
+            player.removeEffect(n);
+            soundManager.setSpeed(player);
+          }, sec * 1000)
+        );
       }
     }
   },
@@ -261,11 +273,13 @@ var effects = [
         var n = this.name;
         player.effectText.push(n);
         soundManager.setSpeed(player);
-        setTimeout(function() {
-          player.speed /= 2;
-          player.removeEffect(n);
-          soundManager.setSpeed(player);
-        }, sec * 1000);
+        timeouts.push(
+          setTimeout(function() {
+            player.speed /= 2;
+            player.removeEffect(n);
+            soundManager.setSpeed(player);
+          }, sec * 1000)
+        );
       }
     }
   },
@@ -277,11 +291,13 @@ var effects = [
         var n = this.name;
         soundManager.doublePoints();
         player.effectText.push(n);
-        setTimeout(function() {
-          player.pointsMultiplier = 1;
-          player.removeEffect(n);
-          soundManager.doublePoints();
-        }, sec * 1000);
+        timeouts.push(
+          setTimeout(function() {
+            player.pointsMultiplier = 1;
+            player.removeEffect(n);
+            soundManager.doublePoints();
+          }, sec * 1000)
+        );
       }
     }
   }
@@ -613,7 +629,9 @@ function Game(gameState, player) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState, new Player(this.name)));
+    this.gameState.setState(
+      new Game(this.gameState, new Player(this.player.name))
+    );
   });
   this.buttons.push(this.playAgainBtn);
 }
