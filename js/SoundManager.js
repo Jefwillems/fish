@@ -36,6 +36,7 @@ SoundManager.prototype.gameOver = function() {
   this.playSound("schurk");
 };
 SoundManager.prototype.stopAll = function() {
+  clearTimeouts();
   for (sound in this.sounds) {
     if (this.isPlaying(sound)) {
       this.stopSound(sound);

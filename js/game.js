@@ -38,7 +38,9 @@ function Game(gameState, player) {
   );
   this.playAgainBtn.setText(t);
   this.playAgainBtn.setClickHandler(() => {
-    this.gameState.setState(new Game(this.gameState, new Player(this.name)));
+    this.gameState.setState(
+      new Game(this.gameState, new Player(this.player.name))
+    );
   });
   this.buttons.push(this.playAgainBtn);
 }
