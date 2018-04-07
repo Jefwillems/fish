@@ -944,9 +944,17 @@ function Menu(gameState) {
     gameState.setState(new Info(this.gameState));
   });
   this.buttons.push(infoBtn);
+
+  this.title = "Fadry Fish";
 }
 
 Menu.prototype.draw = function() {
+  push();
+  textSize(64);
+  textAlign(CENTER, CENTER);
+  textFont("Palatino");
+  text(this.title, 0, 0, width, height / 2);
+  pop();
   for (var i = 0; i < this.buttons.length; i++) {
     this.buttons[i].draw();
   }
