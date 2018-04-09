@@ -57,9 +57,9 @@ SoundManager.prototype.setSpeed = function(player) {
 
   if (player.speed === globalSettings.player_base_speed) {
     this.loopSound("main");
-  } else if (player.speed === globalSettings.player_base_speed * 2) {
+  } else if (player.speed > globalSettings.player_base_speed) {
     this.loopSound("fast");
-  } else if (player.speed === globalSettings.player_base_speed / 2) {
+  } else if (player.speed < globalSettings.player_base_speed) {
     this.loopSound("slow");
   } else {
     this.loopSound("main");
