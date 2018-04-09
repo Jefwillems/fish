@@ -584,7 +584,7 @@ Fish.prototype.update = function() {
 };
 
 Fish.prototype.reset = function(player) {
-  this.size = player.size + random() * 8 - 4;
+  this.size = player.size + random() * 16 - 8;
   this.x = player.cX + (width / 2 * random() + 50);
   this.y = player.cY + (height / 2 * random() + 50);
   this.direction = [random() * 2 - 1, random() * 2 - 1];
