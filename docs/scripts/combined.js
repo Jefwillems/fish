@@ -411,7 +411,7 @@ function Player(name) {
   this.img = globalSettings.playerImg;
   this.movingRight = true;
   this.speed = globalSettings.player_base_speed;
-  this.score = 100;
+  this.score = 0;
   this.effectText = [];
   this.pointsMultiplier = 1;
 }
