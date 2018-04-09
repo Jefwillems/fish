@@ -43,7 +43,7 @@ function Menu(gameState) {
 
 Menu.prototype.draw = function() {
   push();
-  textSize(64);
+  textSize(112);
   textAlign(CENTER, CENTER);
   textFont("Palatino");
   text(this.title, 0, 0, width, height / 2);

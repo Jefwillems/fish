@@ -56,6 +56,56 @@ var globalSettings = {
   gameOver: false
 };
 
+function AnnouncementManager() {
+  this.announcements = [];
+}
+
+AnnouncementManager.prototype.draw = function() {
+  if (this.announcements.length > 0) {
+    this.announcements[0].draw();
+  }
+};
+
+AnnouncementManager.prototype.addAnnouncement = function(text) {
+  this.announcements.push(new Announcement(text, this));
+};
+
+AnnouncementManager.prototype.remove = function(announcement) {
+  var i = this.announcements.indexOf(announcement);
+  this.announcements.splice(i, 1);
+};
+
+function Announcement(text, manager) {
+  this.text = text;
+  this.manager = manager;
+  this.maxSize = 72;
+  this.textSize = 24;
+}
+
+Announcement.prototype.update = function() {
+  this.textSize += 0.5;
+  if (this.textSize >= this.maxSize) {
+    this.destroy();
+  }
+};
+
+Announcement.prototype.draw = function() {
+  this.update();
+  push();
+  fill("white");
+  stroke(this.textSize);
+  textAlign(CENTER, CENTER);
+  textSize(this.textSize);
+  text(this.text, 0, 0, width, height);
+  pop();
+};
+
+Announcement.prototype.destroy = function() {
+  this.manager.remove(this);
+};
+
+var announcementManager = new AnnouncementManager();
+
 function SoundManager() {
   this.sounds = Object.create({});
 }
@@ -236,6 +286,7 @@ var effects = [
         player.speed *= -1;
         var n = this.name;
         soundManager.reverse(player);
+        announcementManager.addAnnouncement("Reverse!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
@@ -254,6 +305,7 @@ var effects = [
         player.speed /= 2;
         var n = this.name;
         soundManager.setSpeed(player);
+        announcementManager.addAnnouncement("Slowdown!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
@@ -273,6 +325,7 @@ var effects = [
         var n = this.name;
         player.effectText.push(n);
         soundManager.setSpeed(player);
+        announcementManager.addAnnouncement("Speedup!");
         timeouts.push(
           setTimeout(function() {
             player.speed /= 2;
@@ -290,6 +343,7 @@ var effects = [
         player.pointsMultiplier = 2;
         var n = this.name;
         soundManager.doublePoints();
+        announcementManager.addAnnouncement("Double points!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
@@ -950,7 +1004,7 @@ function Menu(gameState) {
 
 Menu.prototype.draw = function() {
   push();
-  textSize(64);
+  textSize(112);
   textAlign(CENTER, CENTER);
   textFont("Palatino");
   text(this.title, 0, 0, width, height / 2);
@@ -1049,6 +1103,7 @@ function draw() {
   resetCV();
   wbg.draw();
   state.draw();
+  announcementManager.draw();
 }
 
 var resetCV = function() {

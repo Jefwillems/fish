@@ -13,6 +13,7 @@ var effects = [
         player.speed *= -1;
         var n = this.name;
         soundManager.reverse(player);
+        announcementManager.addAnnouncement("Reverse!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
@@ -31,6 +32,7 @@ var effects = [
         player.speed /= 2;
         var n = this.name;
         soundManager.setSpeed(player);
+        announcementManager.addAnnouncement("Slowdown!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
@@ -50,6 +52,7 @@ var effects = [
         var n = this.name;
         player.effectText.push(n);
         soundManager.setSpeed(player);
+        announcementManager.addAnnouncement("Speedup!");
         timeouts.push(
           setTimeout(function() {
             player.speed /= 2;
@@ -67,6 +70,7 @@ var effects = [
         player.pointsMultiplier = 2;
         var n = this.name;
         soundManager.doublePoints();
+        announcementManager.addAnnouncement("Double points!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {

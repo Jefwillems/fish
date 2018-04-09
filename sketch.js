@@ -9,6 +9,7 @@ function draw() {
   resetCV();
   wbg.draw();
   state.draw();
+  announcementManager.draw();
 }
 
 var resetCV = function() {
