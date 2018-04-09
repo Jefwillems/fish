@@ -411,7 +411,7 @@ function Player(name) {
   this.img = globalSettings.playerImg;
   this.movingRight = true;
   this.speed = globalSettings.player_base_speed;
-  this.score = 0;
+  this.score = 100;
   this.effectText = [];
   this.pointsMultiplier = 1;
 }
@@ -737,7 +737,7 @@ Game.prototype.getChanceOfSpawningPowerup = function() {
   return round(this.player.score / 10) * 10 / 100;
 };
 
-Game.prototype.maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
+Game.prototype.maySpawnPowerup = function(chance) {
   if (chance > this.MAX_POWERUP_CHANCE) {
     chance = this.MAX_POWERUP_CHANCE;
   }
@@ -750,7 +750,7 @@ Game.prototype.maySpawnPowerup = function(chance = MAX_POWERUP_CHANCE) {
 Game.prototype.handleSpawns = function() {
   var chance = this.getChanceOfSpawningPowerup();
   if (chance >= 1) {
-    this.maySpawnPowerup();
+    this.maySpawnPowerup(this.MAX_POWERUP_CHANCE);
   }
   chance = chance - floor(chance);
   this.maySpawnPowerup(chance);
