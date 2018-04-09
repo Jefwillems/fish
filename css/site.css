@@ -11,13 +11,19 @@ body {
   height: 100vh;
 }
 .icons {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
+  position: relative;
   font-size: 2em;
+  bottom: 1.2em;
+  right: 0.5em;
+  margin-left: auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  max-width: 2.5em;
+  z-index: 0;
+}
+a {
+  cursor: pointer;
 }
 .icons a {
   color: black;
