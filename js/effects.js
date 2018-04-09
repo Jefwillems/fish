@@ -31,14 +31,14 @@ var effects = [
       if (!player.hasEffect(this.name)) {
         player.speed /= 2;
         var n = this.name;
-        soundManager.setSpeed(player);
+        soundManager.toggleSlow();
         announcementManager.addAnnouncement("Slowdown!");
         player.effectText.push(n);
         timeouts.push(
           setTimeout(function() {
             player.speed *= 2;
             player.removeEffect(n);
-            soundManager.setSpeed(player);
+            soundManager.toggleSlow();
           }, sec * 1000)
         );
       }
@@ -51,13 +51,13 @@ var effects = [
         player.speed *= 2;
         var n = this.name;
         player.effectText.push(n);
-        soundManager.setSpeed(player);
+        soundManager.toggleFast();
         announcementManager.addAnnouncement("Speedup!");
         timeouts.push(
           setTimeout(function() {
             player.speed /= 2;
             player.removeEffect(n);
-            soundManager.setSpeed(player);
+            soundManager.toggleFast();
           }, sec * 1000)
         );
       }

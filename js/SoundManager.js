@@ -22,7 +22,7 @@ SoundManager.prototype.isPlaying = function(name) {
 SoundManager.prototype.reverse = function(player) {
   if (this.isPlaying("reverse")) {
     this.stopAll();
-    this.setSpeed(player);
+    this.loopSound("main");
   } else {
     if (!globalSettings.gameOver) {
       this.stopAll();
@@ -52,17 +52,24 @@ SoundManager.prototype.doublePoints = function() {
     this.loopSound("double");
   }
 };
-SoundManager.prototype.setSpeed = function(player) {
-  this.stopAll();
 
-  if (player.speed === globalSettings.player_base_speed) {
+SoundManager.prototype.toggleSlow = function() {
+  if (this.isPlaying("slow")) {
+    this.stopAll();
     this.loopSound("main");
-  } else if (player.speed > globalSettings.player_base_speed) {
-    this.loopSound("fast");
-  } else if (player.speed < globalSettings.player_base_speed) {
-    this.loopSound("slow");
   } else {
+    this.stopAll();
+    this.loopSound("slow");
+  }
+};
+
+SoundManager.prototype.toggleFast = function() {
+  if (this.isPlaying("fast")) {
+    this.stopAll();
     this.loopSound("main");
+  } else {
+    this.stopAll();
+    this.loopSound("fast");
   }
 };
 var soundManager = new SoundManager();
