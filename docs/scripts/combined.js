@@ -483,6 +483,9 @@ Player.prototype.draw = function() {
 
   text(t, 10, 30);
   pop();
+  if (!this.effectText.length === 0) {
+    this.resetStats();
+  }
 };
 
 /**
@@ -545,6 +548,10 @@ Player.prototype.removeEffect = function(name) {
 
 Player.prototype.addScore = function() {
   this.score += 1 * this.pointsMultiplier;
+};
+Player.prototype.resetStats = function() {
+  this.speed = globalSettings.player_base_speed;
+  this.pointsMultiplier = 1;
 };
 
 var jpMargin = 12;
