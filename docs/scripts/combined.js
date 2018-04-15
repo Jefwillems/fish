@@ -783,6 +783,7 @@ Game.prototype.mouseClicked = function(mX, mY) {
 };
 Game.prototype.gameOver = function() {
   globalSettings.gameOver = true;
+  this.postScore();
   soundManager.gameOver();
 };
 
