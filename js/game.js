@@ -147,7 +147,7 @@ Game.prototype.postScore = function() {
       postData,
       function(data) {
         console.log(data);
-        gameState.setState(new Menu(gameState));
+        //gameState.setState(new Menu(gameState));
       },
       function(error) {
         console.error(error);
