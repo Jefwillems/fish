@@ -76,15 +76,15 @@ export default class Player {
 
     sketch.text(t, 10, 30);
     sketch.pop();
-    if (!(this.effectText.length === 0)) {
-      this.resetStats();
-    }
+    // if (!(this.effectText.length === 0)) {
+    //   this.resetStats();
+    // }
   }
 
   canEat(sketch, fish) {
     const x = this.cX - this.w() / 2;
     const y = this.cY - this.h() / 2;
-    const hit = sketch.collideRectCircle(
+    return sketch.collideRectCircle(
       x - this.w() / 2,
       y - this.h() / 2,
       this.w(),
@@ -94,7 +94,6 @@ export default class Player {
       fish.size,
       fish.size,
     );
-    return hit;
   }
 
   eat(sketch, fish) {
@@ -112,13 +111,7 @@ export default class Player {
   }
 
   hasEffect(name) {
-    let ret = false;
-    for (let i = 0; i < this.effectText.length; i += 1) {
-      if (this.effectText[i] === name) {
-        ret = true;
-      }
-    }
-    return ret;
+    return this.effectText.includes(name);
   }
 
   removeEffect(name) {
@@ -136,5 +129,9 @@ export default class Player {
   resetStats() {
     this.speed = GlobalSettings.player_base_speed;
     this.pointsMultiplier = 1;
+  }
+
+  setSpeed(speed) {
+    this.speed = speed;
   }
 }

@@ -56,7 +56,7 @@ export default class GameState {
     this.playAgainBtn.setText(t);
     this.playAgainBtn.setClickHandler(() => {
       this.state.setState(
-        new GameState(this.state, new Player(sketch, this.player.name)),
+        new GameState(sketch, this.state, new Player(sketch, this.player.name)),
       );
     });
     this.buttons.push(this.playAgainBtn);
@@ -73,7 +73,7 @@ export default class GameState {
             if (this.player.score % 15 === 0) {
               this.swapFishImages();
             }
-            this.handleSpawns();
+            this.handleSpawns(sketch);
           } else {
             this.gameOver();
           }
@@ -87,7 +87,7 @@ export default class GameState {
         }
       }
       for (let i = 0; i < this.powerups.length; i += 1) {
-        this.powerups[i].draw();
+        this.powerups[i].draw(sketch);
         if (this.player.canEat(sketch, this.powerups[i])) {
           this.player.addPower(this.powerups[i]);
           this.powerups.splice(i, 1);
@@ -112,24 +112,24 @@ export default class GameState {
     return Math.round(this.player.score / 10) * 0.1;
   }
 
-  maySpawnPowerup(chance) {
+  maySpawnPowerup(sketch, chance) {
     let actualChance = chance;
     if (actualChance > this.MAX_POWERUP_CHANCE) {
       actualChance = this.MAX_POWERUP_CHANCE;
     }
     const r = Math.random();
     if (r < actualChance) {
-      this.powerups.push(new Powerup(this.player));
+      this.powerups.push(new Powerup(sketch, this.player));
     }
   }
 
-  handleSpawns() {
+  handleSpawns(sketch) {
     let chance = this.getChanceOfSpawningPowerup();
     if (chance >= 1) {
-      this.maySpawnPowerup(this.MAX_POWERUP_CHANCE);
+      this.maySpawnPowerup(sketch, this.MAX_POWERUP_CHANCE);
     }
     chance -= Math.floor(chance);
-    this.maySpawnPowerup(chance);
+    this.maySpawnPowerup(sketch, chance);
   }
 
   mouseClicked(sketch, mX, mY) {

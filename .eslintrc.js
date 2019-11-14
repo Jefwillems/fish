@@ -20,7 +20,8 @@ module.exports = {
       {
         "props": true,
         "ignorePropertyModificationsFor": [
-          "sketch"
+          "sketch",
+          "player"
         ]
       }
     ],

@@ -4,6 +4,7 @@ import WaterBackground from './background/waterbackground';
 import './styles/styles.scss';
 import State from './states/state';
 import GlobalSettings from './global.settings';
+import AnnouncementManager from './announcement.manager';
 
 const s = (sketch) => {
   let wbg;
@@ -54,6 +55,7 @@ const s = (sketch) => {
     resetCv();
     wbg.draw(sketch);
     gs.draw(sketch);
+    AnnouncementManager.draw(sketch);
   };
 };
 
