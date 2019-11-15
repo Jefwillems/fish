@@ -1,3 +1,4 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/519e22b4-6abc-4cc8-a540-07c23c383bfd/deploy-status)](https://app.netlify.com/sites/adoring-volhard-3271fa/deploys)
 # fish
 eat the fish. Javascript game build with p5.js
 
