@@ -1,10 +1,10 @@
-import 'p5/lib/addons/p5.sound.min';
 import '../lib/p5.collide2d.min';
 import WaterBackground from './background/waterbackground';
 import './styles/styles.scss';
 import State from './states/state';
 import GlobalSettings from './global.settings';
-import AnnouncementManager from './announcement.manager';
+import AnnouncementManager from './managers/announcement.manager';
+import SoundManager from './managers/sound.manager';
 
 const s = (sketch) => {
   let wbg;
@@ -44,6 +44,16 @@ const s = (sketch) => {
     GlobalSettings.fish_images.push(sketch.loadImage('./assets/img/kurkdroog.png'));
     GlobalSettings.fish_images.push(sketch.loadImage('./assets/img/Maggie.png'));
     GlobalSettings.fish_images.push(sketch.loadImage('./assets/img/Hawking.png'));
+
+    sketch.soundFormats('wav');
+    SoundManager.addSound('intro', sketch.loadSound('./assets/sounds/Intro.mp3'));
+    SoundManager.addSound('main', sketch.loadSound('./assets/sounds/Main.mp3'));
+    SoundManager.addSound('fast', sketch.loadSound('./assets/sounds/main_fast.mp3'));
+    SoundManager.addSound('slow', sketch.loadSound('./assets/sounds/main_slow.mp3'));
+    SoundManager.addSound('grom', sketch.loadSound('./assets/sounds/grommel.mp3'));
+    SoundManager.addSound('schurk', sketch.loadSound('./assets/sounds/schurk.mp3'));
+    SoundManager.addSound('reverse', sketch.loadSound('./assets/sounds/Main_reverse.mp3'));
+    SoundManager.addSound('double', sketch.loadSound('./assets/sounds/Double_points.mp3'));
   };
 
   sketch.setup = () => {
@@ -59,5 +69,5 @@ const s = (sketch) => {
   };
 };
 
-// eslint-disable-next-line no-unused-vars,new-cap,no-undef,no-var
-var app = new p5(s);
+// eslint-disable-next-line no-unused-vars,new-cap,no-undef
+const app = new p5(s);
