@@ -30,7 +30,9 @@ export default class State {
   setState(s) {
     this.state.destroy();
     this.state = s;
-    this.state.initSound();
+    setTimeout(() => {
+      this.state.initSound();
+    }, 100);
   }
 
   mouseClicked(sketch, mX, mY) {

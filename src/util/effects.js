@@ -1,4 +1,5 @@
 import AnnouncementManager from '../managers/announcement.manager';
+import SoundManager from '../managers/sound.manager';
 
 let timeouts = [];
 
@@ -16,13 +17,13 @@ export const effects = [
       if (!player.hasEffect(this.name)) {
         player.setSpeed(player.speed * -1);
         const n = this.name;
-        // soundManager.reverse(player);
+        SoundManager.reverse(player);
         AnnouncementManager.addAnnouncement('Reverse!');
         player.effectText.push(n);
         timeouts.push(
           setTimeout(() => {
             player.setSpeed(player.speed * -1);
-            // soundManager.reverse(player);
+            SoundManager.reverse(player);
             player.removeEffect(n);
           }, sec * 1000),
         );
@@ -36,9 +37,11 @@ export const effects = [
         player.setSpeed(player.speed * 2);
         const n = this.name;
         AnnouncementManager.addAnnouncement('Speedup!');
+        SoundManager.toggleFast();
         player.effectText.push(n);
         timeouts.push(setTimeout(() => {
           player.setSpeed(player.speed / 2);
+          SoundManager.toggleFast();
           player.removeEffect(n);
         }, sec * 1000));
       }
@@ -50,14 +53,14 @@ export const effects = [
       if (!player.hasEffect(this.name)) {
         player.setSpeed(player.speed / 2);
         const n = this.name;
-        // soundManager.toggleSlow();
+        SoundManager.toggleSlow();
         AnnouncementManager.addAnnouncement('Slowdown!');
         player.effectText.push(n);
         timeouts.push(
           setTimeout(() => {
             player.setSpeed(player.speed * 2);
             player.removeEffect(n);
-            // soundManager.toggleSlow();
+            SoundManager.toggleSlow();
           }, sec * 1000),
         );
       }
@@ -69,14 +72,14 @@ export const effects = [
       if (!player.hasEffect(this.name)) {
         player.pointsMultiplier = 2;
         const n = this.name;
-        // soundManager.doublePoints();
+        SoundManager.doublePoints();
         AnnouncementManager.addAnnouncement('Double points!');
         player.effectText.push(n);
         timeouts.push(
           setTimeout(() => {
             player.pointsMultiplier = 1;
             player.removeEffect(n);
-            // soundManager.doublePoints();
+            SoundManager.doublePoints();
           }, sec * 1000),
         );
       }

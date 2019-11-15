@@ -15,15 +15,16 @@ class SoundManager {
   }
 
   stopSound(name) {
-    this.sounds[name].stop();
+    this.sounds[name].stopAll();
   }
 
   addSound(name, sound) {
+    sound.playMode('sustain');
     this.sounds[name] = sound;
   }
 
   isPlaying(name) {
-    return this.sounds[name].isPlaying();
+    return this.sounds[name].isPlaying() || this.sounds[name].isLooping();
   }
 
   reverse() {
@@ -38,8 +39,10 @@ class SoundManager {
 
   gameOver() {
     this.stopAll();
-    this.loopSound('main');
-    this.playSound('schurk');
+    setTimeout(() => {
+      this.loopSound('main');
+      this.playSound('schurk');
+    }, 100);
   }
 
   stopAll() {

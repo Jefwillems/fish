@@ -153,7 +153,7 @@ export default class GameState {
 
   // eslint-disable-next-line class-methods-use-this
   destroy() {
-    SoundManager.stopSound('main');
+    SoundManager.stopAll();
   }
 
   // eslint-disable-next-line class-methods-use-this
