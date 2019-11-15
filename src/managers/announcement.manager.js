@@ -1,4 +1,4 @@
-import Announcement from './util/announcement';
+import Announcement from '../util/announcement';
 
 class AnnouncementManager {
   constructor() {

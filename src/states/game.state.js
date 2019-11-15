@@ -1,17 +1,16 @@
 import UsernameState from './username.state';
 import GlobalSettings from '../global.settings';
 import Fish from '../components/fish';
-import Enemy from '../components/enemy';
 import Button from '../components/button';
-// eslint-disable-next-line import/no-cycle
 import Menu from './menu.state';
 import Player from '../components/player';
 import Powerup from '../components/powerup';
 import { wasButtonClicked } from '../util';
+import SoundManager from '../managers/sound.manager';
+import Enemy from '../components/enemy';
 
 export default class GameState {
   constructor(sketch, state, player) {
-    console.log('starting game');
     if (!player) {
       state.setState(new UsernameState(sketch, state));
     }
@@ -30,7 +29,7 @@ export default class GameState {
       this.fishes.push(new Fish(sketch, 0));
     }
     for (let i = 0; i < sketch.random() * 8 + 3; i += 1) {
-      this.enemies.push(new Enemy());
+      this.enemies.push(new Enemy(sketch));
     }
     this.player = player;
 
@@ -144,17 +143,17 @@ export default class GameState {
   gameOver() {
     GlobalSettings.gameOver = true;
     // this.postScore();
-    // soundManager.gameOver();
+    SoundManager.gameOver();
   }
 
   // eslint-disable-next-line class-methods-use-this
   initSound() {
-    // soundManager.loopSound("main");
+    SoundManager.loopSound('main');
   }
 
   // eslint-disable-next-line class-methods-use-this
   destroy() {
-    // soundManager.stopSound("main");
+    SoundManager.stopSound('main');
   }
 
   // eslint-disable-next-line class-methods-use-this

@@ -25,6 +25,6 @@ export default class Announcement {
   }
 
   destroy() {
-    this.manager.remove(this);
+    this.manager.removeAnnouncement(this);
   }
 }

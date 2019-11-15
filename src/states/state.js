@@ -20,9 +20,9 @@ export default class State {
     sketch.push();
     sketch.imageMode(sketch.CORNER);
     if (GlobalSettings.soundOn) {
-      // sketch.image(this.soundOnImg, 5, sketch.height - 55, 50, 50);
+      sketch.image(this.soundOnImg, 5, sketch.height - 55, 50, 50);
     } else {
-      // sketch.image(this.soundOffImg, 5, sketch.height - 55, 50, 50);
+      sketch.image(this.soundOffImg, 5, sketch.height - 55, 50, 50);
     }
     sketch.pop();
   }

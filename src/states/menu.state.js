@@ -1,10 +1,10 @@
 import Button from '../components/button';
 import GlobalSettings from '../global.settings';
 import { wasButtonClicked } from '../util';
-// eslint-disable-next-line import/no-cycle
 import GameState from './game.state';
 import Player from '../components/player';
 import UsernameState from './username.state';
+import SoundManager from '../managers/sound.manager';
 
 export default class Menu {
   constructor(sketch, gamestate) {
@@ -22,7 +22,7 @@ export default class Menu {
     playButton.setClickHandler(() => {
       const usrn = localStorage.getItem('username');
       if (usrn && usrn.length !== 0) {
-        // if (soundManager.isPlaying('intro')) soundManager.stopSound('intro');
+        if (SoundManager.isPlaying('intro')) SoundManager.stopSound('intro');
         this.gamestate.setState(new GameState(sketch, this.gamestate, new Player(sketch, usrn)));
       } else {
         this.gamestate.setState(new UsernameState(sketch, this.gamestate));
@@ -71,7 +71,9 @@ export default class Menu {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  initSound() {}
+  initSound() {
+    SoundManager.loopSound('intro');
+  }
 
   // eslint-disable-next-line class-methods-use-this
   destroy() {}
