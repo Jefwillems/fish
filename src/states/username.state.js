@@ -24,7 +24,7 @@ export default class UsernameState {
     this.playBtn.setClickHandler(() => {
       localStorage.setItem('username', this.editText.text);
       this.state.setState(
-        new GameState(this.state, new Player(this.editText.text)),
+        new GameState(sketch, this.state, new Player(this.editText.text)),
       );
     });
 
