@@ -1,6 +1,8 @@
 # fish
 eat the fish. Javascript game build with p5.js
 
+* You can try out this game in it's current form (master branch) on this website: [fish.jefwillems.xyz](https://fish.jefwillems.xyz)
+
 # How to install
 
 These commands will download the source code of this project, and install it's dependencies.
