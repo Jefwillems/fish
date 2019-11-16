@@ -26,7 +26,7 @@ $ npm run build
 This will build the project and it's dependencies in the **dist** folder.
 You can point your webserver to this folder or copy over the files to your desired location.
 
-#todo
+# todo
 
 * post scores to a firebase app
 * create the about screen
