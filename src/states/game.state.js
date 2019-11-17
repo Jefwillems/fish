@@ -8,6 +8,7 @@ import Powerup from '../components/powerup';
 import { wasButtonClicked } from '../util';
 import SoundManager from '../managers/sound.manager';
 import Enemy from '../components/enemy';
+import Boss from '../components/boss';
 
 export default class GameState {
   constructor(sketch, state, player) {
@@ -59,6 +60,8 @@ export default class GameState {
       );
     });
     this.buttons.push(this.playAgainBtn);
+
+    this.bosses = [];
   }
 
   draw(sketch) {
@@ -72,6 +75,7 @@ export default class GameState {
             if (this.player.score % 15 === 0) {
               this.swapFishImages();
             }
+            this.handleBossSpawns(sketch);
             this.handleSpawns(sketch);
           } else {
             this.gameOver();
@@ -92,6 +96,11 @@ export default class GameState {
           this.powerups.splice(i, 1);
         }
       }
+      this.handleBossDespawns();
+      this.checkIfHitByBoss(sketch);
+      this.bosses.forEach((boss) => {
+        boss.draw(sketch, this.player);
+      });
       this.player.draw(sketch);
     } else {
       sketch.push();
@@ -185,5 +194,31 @@ export default class GameState {
         }, i * 20);
       }
     });
+  }
+
+  checkIfHitByBoss(sketch) {
+    this.bosses.forEach((boss) => {
+      boss.currentProjectiles.forEach((proj) => {
+        if (this.player.canEat(sketch, proj)) {
+          this.gameOver();
+        }
+      });
+    });
+  }
+
+  handleBossDespawns() {
+    this.bosses.forEach((boss, i) => {
+      if (boss.outOfProjectiles()) {
+        this.bosses.splice(i, 1);
+      }
+    });
+  }
+
+  handleBossSpawns(sketch) {
+    if (this.player.score % 20 === 0) {
+      for (let i = 0; i < 3; i += 1) {
+        this.bosses.push(new Boss(sketch));
+      }
+    }
   }
 }

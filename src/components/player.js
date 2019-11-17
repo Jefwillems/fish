@@ -24,6 +24,13 @@ export default class Player {
     return this.size;
   }
 
+  get center() {
+    return {
+      x: this.cX - this.w() / 2,
+      y: this.cY - this.h() / 2,
+    };
+  }
+
   move(sketch) {
     if (sketch.keyIsDown(sketch.LEFT_ARROW)) {
       this.movingRight = false;
