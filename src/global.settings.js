@@ -1,4 +1,4 @@
-export default {
+const GlobalSettings = {
   invertColors: false,
   drawBlack: false,
   aboutUrl: '/highscore/',
@@ -11,3 +11,6 @@ export default {
   fish_images: [],
   gameOver: false,
 };
+window.GlobalSettings = GlobalSettings;
+
+export default GlobalSettings;
